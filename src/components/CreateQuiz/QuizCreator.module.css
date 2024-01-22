@@ -1,0 +1,112 @@
+/* Backdrop Styling */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Modal Styling */
+.modal {
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  padding: 20px;
+  z-index: 1001;
+}
+
+/* Modal Container Styling */
+.modalContainer {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.container {
+  /* flex-grow: auto; */
+  width: 500px;
+  /* padding: 20px; */
+  height: auto;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  /* border-radius: 5px; */
+}
+
+.quizInput {
+  width: 90%;
+  padding: 12px;
+  /* top, right-left, buttom */
+  margin: 10px 5px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.radioContainer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  gap: 30px;
+  margin: 15px 0;
+  border: none;
+}
+
+.radioContainer label {
+  margin-bottom: 10px;
+}
+
+.radioLabel {
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+}
+
+.radioLabel input {
+  margin-right: 5px;
+}
+
+.btnContainer {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 10rem;
+}
+
+.btnCancel {
+  background-color: #fff;
+  color: #000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.btnCancel:hover {
+  opacity: 0.75;
+}
+
+.btnContinue {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.btnContinue:hover {
+  opacity: 0.75;
+}
+
+@media (max-width: 600px) {
+  .quizInput {
+    width: 100%;
+  }
+}
