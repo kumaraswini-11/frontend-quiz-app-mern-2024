@@ -8,6 +8,7 @@ import Dashboard from "./Dashboard/Dashboard";
 import Analytics from "./Analytics/Analytics";
 import QuizCreator from "./CreateQuiz/QuizCreator";
 import QuestionCreator from "./CreateQuiz/QuestionCreator";
+import ShareQuiz from "./CreateQuiz/ShareQuiz";
 
 export {
   PageLoader,
@@ -20,4 +21,5 @@ export {
   Analytics,
   QuizCreator,
   QuestionCreator,
+  ShareQuiz,
 };

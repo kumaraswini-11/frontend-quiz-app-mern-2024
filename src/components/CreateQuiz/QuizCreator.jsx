@@ -1,34 +1,30 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { InputComponent, ButtonComponent } from "../";
 import styles from "./QuizCreator.module.css";
 
-export default function QuizCreator({ activePage }) {
+export default function QuizCreator({ proceedToNextStep }) {
   const [quizData, setQuizData] = useState({
     quizName: "",
     quizType: "questionAndAnswer",
   });
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
-    // Update the quiz name in the state
     setQuizData({ ...quizData, quizName: event.target.value });
   };
 
-  // Handel Updates of the  quiz type in the state
   const handleRadioChange = (event) => {
     setQuizData({ ...quizData, quizType: event.target.value });
   };
 
-  // continue to the next page
   const handleContinue = () => {
     console.log("Quiz Data:", quizData);
+    proceedToNextStep();
   };
 
   const handleCancel = () => {
-    // Reset the state to initial values
-    setQuizData({
-      quizName: "",
-      quizType: "questionAndAnswer",
-    });
+    navigate(-1);
   };
 
   return (
@@ -37,7 +33,7 @@ export default function QuizCreator({ activePage }) {
         <section className={styles.container}>
           <InputComponent
             type="text"
-            className={styles["quizInput"]}
+            className={styles.quizInput}
             placeholder="Quiz name"
             ariaLabelledby="Quiz name"
             required
@@ -46,27 +42,31 @@ export default function QuizCreator({ activePage }) {
           />
 
           <fieldset className={styles.radioContainer}>
-            <label className="">Quiz Type</label>
-            <div>
-              <input
-                type="radio"
-                id="questionAndAnswer"
-                name="quizType"
-                value="questionAndAnswer"
-                checked={quizData.quizType === "questionAndAnswer"}
-                onChange={handleRadioChange}
-              />
-              <label htmlFor="questionAndAnswer">Question and Answer</label>
+            <label className={styles.radioLabel}>Quiz Type</label>
+            <div className={styles.radioOptions}>
+              <div>
+                <input
+                  type="radio"
+                  id="questionAndAnswer"
+                  name="quizType"
+                  value="questionAndAnswer"
+                  checked={quizData.quizType === "questionAndAnswer"}
+                  onChange={handleRadioChange}
+                />
+                <label htmlFor="questionAndAnswer">Question and Answer</label>
+              </div>
 
-              <input
-                type="radio"
-                id="poll"
-                name="quizType"
-                value="poll"
-                checked={quizData.quizType === "poll"}
-                onChange={handleRadioChange}
-              />
-              <label htmlFor="poll">Poll</label>
+              <div>
+                <input
+                  type="radio"
+                  id="poll"
+                  name="quizType"
+                  value="poll"
+                  checked={quizData.quizType === "poll"}
+                  onChange={handleRadioChange}
+                />
+                <label htmlFor="poll">Poll</label>
+              </div>
             </div>
           </fieldset>
 
