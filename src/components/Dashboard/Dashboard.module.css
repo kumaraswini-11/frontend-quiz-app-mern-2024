@@ -1,0 +1,81 @@
+.dashboardContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.userDetails {
+  display: flex;
+  gap: 20px;
+}
+
+.colorBox {
+  width: 150px;
+  height: 150px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.message {
+  font-size: 1rem;
+}
+
+.count {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.trendingQuizzes {
+  width: 100%;
+}
+
+.quizDetailsHeader {
+  color: gray;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.quizDetails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  background-color: whitesmoke;
+}
+
+.quizCard {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 5px;
+  height: 80px;
+  flex: 1;
+}
+
+.quizInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quizTitle {
+  color: gray;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.views {
+  color: green;
+  margin-top: 5px;
+}
+
+.createdDate {
+  color: gray;
+  margin-top: 5px;
+}

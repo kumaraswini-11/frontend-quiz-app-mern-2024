@@ -1,60 +1,58 @@
+/* Sidebar Container */
 .sidebar {
-  width: 200px;
-  height: 100vh;
-  background-color: #fff;
-  color: #000;
-  padding: 10px;
-  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+  width: 240px;
+  height: 100%;
+  background-color: #f0f0f0; /* Light gray background */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  overflow-x: hidden;
+  padding: 16px;
 }
 
-h1 {
-  font-size: 1.5rem;
+/* Sidebar Header */
+.sidebar-header {
+  text-align: center;
   margin-bottom: 20px;
 }
 
-nav {
-  margin-top: 12rem;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* Sidebar Navigation */
+.sidebar-nav {
+  flex-grow: 1;
 }
 
-.link {
+/* Sidebar Link */
+.sidebar-link {
+  display: block;
+  padding: 10px;
+  color: #333; /* Dark text color */
   text-decoration: none;
-  color: #000;
-  padding: 10px;
   transition: background-color 0.3s ease;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: center;
 }
 
-.link:hover {
-  background-color: #eee;
-  width: 100%;
+/* Sidebar Active Link */
+.sidebar-link.active {
+  background-color: #fff; /* White background for active link */
+  color: #007bff; /* Blue text color for active link */
 }
 
-hr {
-  border: 1px solid #eee;
-  width: 100%;
-  margin-top: 15rem;
+/* Sidebar Separator */
+.sidebar-separator {
+  height: 1px;
+  background-color: #ccc; /* Separator color */
+  margin: 10px 0;
 }
 
-.button {
-  color: #000;
+/* Sidebar Logout Button */
+.sidebar-logout {
+  margin-top: 20px;
   padding: 10px;
-  border: none;
+  background-color: #fff; /* White background for button */
+  color: #333; /* Dark text color for button */
+  border: 1px solid #ccc; /* Border color for button */
   cursor: pointer;
   transition: background-color 0.3s ease;
-  width: 100%;
-  box-sizing: border-box;
 }
 
-.button:hover {
-  background-color: #5e5353;
+/* Hover effect for Logout Button */
+.sidebar-logout:hover {
+  background-color: #eee; /* Light gray background on hover */
 }

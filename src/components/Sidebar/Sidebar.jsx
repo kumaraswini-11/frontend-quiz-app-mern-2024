@@ -1,65 +1,76 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { logoutSuccess } from "../../redux/slices/authenticationSlice";
-import styles from "./Sidebar.module.css";
 import { ButtonComponent } from "../";
+import { logout } from "../../api/authService";
+import { logoutSuccess } from "../../redux/slices/authenticationSlice";
+import styles from "./Sidebar.module.css";
 
+// Component for individual navigation links
 const NavigationLink = ({ id, path, label, isActive, onClick }) => (
   <Link
     to={path}
-    className={styles.link}
+    className={`${styles["sidebar-link"]} ${isActive ? styles.active : ""}`}
     onClick={() => onClick(id)}
-    style={{
-      fontWeight: isActive ? "bold" : "normal",
-    }}
   >
     {label}
   </Link>
 );
 
 const Sidebar = ({ activePage, handleNavigation }) => {
+  // Menu items for the navigation
   const menuItems = [
-    { id: "dashboard", label: "Dashboard", path: "/dashboard" },
+    { id: "dashboard", label: "Dashboard", path: "/app" },
     { id: "analytics", label: "Analytics", path: "/analytics" },
     { id: "createquiz", label: "Create Quiz", path: "/create-quiz" },
   ];
 
+  // Redux dispatch and React Router's navigate function
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const loginStatus = useSelector((store) => store.auth.status);
 
-  const handleLogout = () => {
-    if (loginStatus) {
-      dispatch(logoutSuccess());
-      toast.success("Logged out successfully.");
-      navigate("/logout");
+  // Handler for the logout button
+  const handleLogout = async () => {
+    try {
+      const response = await logout();
+
+      if (response && response.success) {
+        dispatch(logoutSuccess());
+        toast.success("Logged out successfully.");
+        navigate("/login");
+      }
+    } catch (error) {
+      toast.error(error.response?.data || error.message);
     }
   };
 
   return (
     <aside className={styles.sidebar}>
-      <h1>QUIZZIE</h1>
+      {/* Header section with the QUIZZIE title */}
+      <h1 className={styles["sidebar-header"]}>QUIZZIE</h1>
 
-      <nav>
+      {/* Navigation section with menu items */}
+      <nav className={styles["sidebar-nav"]}>
         {menuItems.map((menuItem) => (
           <NavigationLink
             key={menuItem.id}
-            id={menuItem.id}
-            path={menuItem.path}
-            label={menuItem.label}
+            {...menuItem}
             isActive={activePage === menuItem.id}
             onClick={handleNavigation}
           />
         ))}
       </nav>
 
-      <hr />
+      {/* Separator line */}
+      <hr className={styles["sidebar-separator"]} />
+
+      {/* Logout button */}
       <ButtonComponent
         type="button"
         aria-label="Logout of the account"
-        className={styles.button}
+        className={styles["sidebar-logout"]}
         onClick={handleLogout}
       >
         Logout

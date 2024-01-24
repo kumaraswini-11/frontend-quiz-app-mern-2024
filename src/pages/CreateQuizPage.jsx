@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  Sidebar,
-  QuizCreator,
-  QuestionCreator,
-  ShareQuiz,
-} from "../components";
+import { QuizCreator, QuestionCreator, ShareQuiz } from "../components";
 
 function CreateQuizPage() {
   const [activePage, setActivePage] = useState("createquiz");

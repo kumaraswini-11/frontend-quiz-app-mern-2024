@@ -3,6 +3,7 @@ import InputComponent from "./InputComponent";
 import ButtonComponent from "./ButtonComponent";
 import Signup from "./Sign-up/Signup";
 import Login from "./Login/Login";
+import AuthLayout from "./AuthLayout";
 import Sidebar from "./Sidebar/Sidebar";
 import Dashboard from "./Dashboard/Dashboard";
 import Analytics from "./Analytics/Analytics";
@@ -22,4 +23,5 @@ export {
   QuizCreator,
   QuestionCreator,
   ShareQuiz,
+  AuthLayout,
 };

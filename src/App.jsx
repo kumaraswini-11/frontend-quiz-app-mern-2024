@@ -1,13 +1,27 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 
-export function App() {
-  const navigate = useNavigate();
+export default function App() {
+  return (
+    <main className={styles.container}>
+      <h1 className={styles.title}>QUIZZIE</h1>
+      <div className={styles.navigation}>
+        <NavLink
+          to="/signup"
+          className={({ isActive }) => `link ${isActive ? "activeClass" : ""}`}
+        >
+          Sign Up
+        </NavLink>
+        <NavLink
+          to="/login"
+          className={({ isActive }) => `link ${isActive ? "activeClass" : ""}`}
+        >
+          Login
+        </NavLink>
+      </div>
 
-  // Extracting authentication status from the Redux store using useSelector
-  const isAlreadyLoggedIn = useSelector((store) => store.auth.status);
-
-  return <Outlet />;
-  // return <>{isAlreadyLoggedIn ? <Outlet /> : navigate("/login")}</>;
+      {/* Render the Signup or Login Page */}
+      <Outlet />
+    </main>
+  );
 }

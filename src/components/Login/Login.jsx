@@ -1,38 +1,32 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { loginSuccess } from "../../redux/slices/authenticationSlice";
-import useAxios from "../../hooks/useAxios";
 import { ButtonComponent, InputComponent } from "..";
+import { login } from "../../api/authService";
 import styles from "./Login.module.css";
 
 function Login() {
-  // Refs for input fields
-  const inputEmailRef = useRef();
-  const inputPasswordRef = useRef();
+  // Ref for the form
+  const formRef = useRef();
 
-  // Hooks for navigation, dispatch, form data, and API call
+  // Hooks for navigation, dispatch
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  // Extract authentication status using useSelector
-  const isAlreadyLoggedIn = useSelector((store) => store.auth.status);
-
   // useEffect for initial setup
   useEffect(() => {
-    if (isAlreadyLoggedIn) {
-      toast("Already a logged-in user. Redirecting to 'Dashboard Page'");
-      navigate("/dashboard");
-    }
-    // Set focus on the first input on page load
-    inputEmailRef.current.focus();
-  }, [isAlreadyLoggedIn, navigate]);
+    // Set focus on the form on page load
+    formRef.current.focus();
+  }, [navigate]);
 
   // Event handler for input changes
   const handleChange = (event) => {
@@ -40,56 +34,43 @@ function Login() {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  // API request setup using useAxios hook
-  const baseUrl = "http://localhost:8080/api/v1/";
-  const { response, error, loading, submitRequest } = useAxios({
-    method: "POST",
-    url: `${baseUrl}user/login`,
-    data: formData,
-    requestConfig: {
-      headers: {
-        "Content-Type": "application/json",
-        "Content-Language": "en-US",
-      },
-    },
-  });
-
   // Event handler for form submission
   const handleOnSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      // Submit the form - api call
-      await submitRequest();
+      setLoading(true);
 
-      // Dispatch the login success action with the received response data
-      if (!loading && !error && response) {
+      const response = await login(formData);
+
+      // Only when successful
+      if (response && response.success) {
         dispatch(loginSuccess(response));
         toast.success("User logged in successfully!");
 
         // Add a delay before navigation
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate("/app");
         }, 1000);
       }
     } catch (error) {
-      // console.error("Error during form submission:", error);
-      // toast.error("Login failed. Please check your credentials.");
+      // Display error message using toast
+      toast.error(error.response?.data || error.message);
+    } finally {
+      // Set loading to false regardless of success or failure
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleOnSubmit}>
-      {error && <p className={styles.error}>{error}</p>}
-
-      {/* Input fileds for email and password */}
+    <form ref={formRef} onSubmit={handleOnSubmit}>
+      {/* Input fields for email and password */}
       <InputComponent
         prevLabel="Email"
         prevLabelClassName={styles.label}
         type="email"
         className={styles.input}
         ariaLabelledby="Email"
-        ref={inputEmailRef}
         required
         onChange={handleChange}
         name="email"
@@ -101,7 +82,6 @@ function Login() {
         type="password"
         className={styles.input}
         ariaLabelledby="Password"
-        ref={inputPasswordRef}
         required
         onChange={handleChange}
         name="password"
@@ -115,9 +95,10 @@ function Login() {
         className={styles.button}
         disabled={loading}
       >
-        {loading ? "Logging in..." : "Login"}
+        {loading ? "Login..." : "Login"}
       </ButtonComponent>
     </form>
   );
 }
+
 export default Login;
