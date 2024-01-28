@@ -1,30 +1,18 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { logoutSuccess } from "../../redux/slices/authenticationSlice";
 import { ButtonComponent } from "../";
 import { logout } from "../../api/authService";
-import { logoutSuccess } from "../../redux/slices/authenticationSlice";
 import styles from "./Sidebar.module.css";
 
-// Component for individual navigation links
-const NavigationLink = ({ id, path, label, isActive, onClick }) => (
-  <Link
-    to={path}
-    className={`${styles["sidebar-link"]} ${isActive ? styles.active : ""}`}
-    onClick={() => onClick(id)}
-  >
-    {label}
-  </Link>
-);
-
-const Sidebar = ({ activePage, handleNavigation }) => {
+const Sidebar = () => {
   // Menu items for the navigation
   const menuItems = [
-    { id: "dashboard", label: "Dashboard", path: "/app" },
-    { id: "analytics", label: "Analytics", path: "/analytics" },
-    { id: "createquiz", label: "Create Quiz", path: "/create-quiz" },
+    { id: "dashboard", label: "Dashboard", path: "/app/dashboard" },
+    { id: "analytics", label: "Analytics", path: "/app/analytics" },
+    { id: "createquiz", label: "Create Quiz", path: "/app/create-quiz" },
   ];
 
   // Redux dispatch and React Router's navigate function
@@ -36,41 +24,44 @@ const Sidebar = ({ activePage, handleNavigation }) => {
     try {
       const response = await logout();
 
-      if (response && response.success) {
+      if (response && response.data.success) {
         dispatch(logoutSuccess());
         toast.success("Logged out successfully.");
         navigate("/login");
       }
     } catch (error) {
-      toast.error(error.response?.data || error.message);
+      toast.error(error.message);
     }
   };
 
   return (
     <aside className={styles.sidebar}>
       {/* Header section with the QUIZZIE title */}
-      <h1 className={styles["sidebar-header"]}>QUIZZIE</h1>
+      <h1 className={styles.sidebarHeader}>QUIZZIE</h1>
 
       {/* Navigation section with menu items */}
-      <nav className={styles["sidebar-nav"]}>
+      <nav className={styles.sidebarNav}>
         {menuItems.map((menuItem) => (
-          <NavigationLink
+          <NavLink
             key={menuItem.id}
-            {...menuItem}
-            isActive={activePage === menuItem.id}
-            onClick={handleNavigation}
-          />
+            to={menuItem.path}
+            className={(isActive) =>
+              `${styles.sidebarLink} ${isActive ? styles.active : ""}`
+            }
+          >
+            {menuItem.label}
+          </NavLink>
         ))}
       </nav>
 
       {/* Separator line */}
-      <hr className={styles["sidebar-separator"]} />
+      <hr className={styles.sidebarSeparator} />
 
       {/* Logout button */}
       <ButtonComponent
         type="button"
         aria-label="Logout of the account"
-        className={styles["sidebar-logout"]}
+        className={styles.sidebarLogout}
         onClick={handleLogout}
       >
         Logout

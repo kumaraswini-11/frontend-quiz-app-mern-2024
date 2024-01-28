@@ -23,7 +23,6 @@ const authSlice = createSlice({
 });
 
 export const { loginSuccess, logoutSuccess } = authSlice.actions;
-
 export const selectIsAuthenticated = (state) => state.auth.isAuthenticated;
 export const selectUserData = (state) => state.auth.userData;
 

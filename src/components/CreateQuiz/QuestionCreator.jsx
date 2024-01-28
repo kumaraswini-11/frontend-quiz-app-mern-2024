@@ -1,25 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { FaPlus } from "react-icons/fa";
-import { IoIosClose } from "react-icons/io";
-import { InputComponent, ButtonComponent } from "../";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { InputComponent, ButtonComponent } from "..";
 import styles from "./QuestionCreator.module.css";
-import { useNavigate } from "react-router-dom";
+import { createQuiz } from "../../api/quizService";
+import { selectUserData } from "../../redux/slices/authenticationSlice";
+import { selectQuizDetails } from "../../redux/slices/quizSlice";
 
 const initialQuestion = {
-  questionData: { questionName: "", optionType: "text" },
-  options: [
-    { text: "", image: "" },
-    { text: "", image: "" },
+  questionText: "",
+  questionType: "",
+  questionOptions: [
+    { optionText: "", optionImageUrl: "", isCorrect: false },
+    { optionText: "", optionImageUrl: "", isCorrect: false },
   ],
   circleCount: 1,
-  timer: "off",
 };
 
-function QuestionCreator({ proceedToNextStep }) {
+function QuestionCreator({ onNext }) {
+  // Get the data from store
+  const userDetails = useSelector(selectUserData);
+  let quizData = useSelector(selectQuizDetails);
+
+  const [quizType, setQuizType] = useState(false);
+  const [timer, setTimer] = useState(5);
   const [questions, setQuestions] = useState([initialQuestion]);
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Use userDetails and quizDetails here
+    if (quizData?.quizType === "questionAndAnswer") {
+      setQuizType(true);
+    }
+  }, [quizData]);
 
   const updateQuestions = (callback) => {
     setQuestions((prevQuestions) => {
@@ -31,34 +48,66 @@ function QuestionCreator({ proceedToNextStep }) {
 
   const handleChange = (event, index) => {
     updateQuestions((updatedQuestions) => {
-      updatedQuestions[index].questionData.questionName = event.target.value;
+      updatedQuestions[index].questionText = event.target.value;
     });
   };
 
   const handleRadioChange = (event, index) => {
     updateQuestions((updatedQuestions) => {
-      updatedQuestions[index].questionData.optionType = event.target.value;
+      updatedQuestions[index].questionType = event.target.value;
     });
   };
 
   const handleChangeOption = (
     questionIndex,
     optionIndex,
-    optionType,
+    questionType,
     event
   ) => {
     updateQuestions((updatedQuestions) => {
-      updatedQuestions[questionIndex].options[optionIndex][optionType] =
-        event.target.value;
+      updatedQuestions[questionIndex].questionOptions[optionIndex][
+        questionType
+      ] = event.target.value;
     });
   };
 
   const handleCancel = () => {
     navigate(-1);
   };
+  const handleContinue = async () => {
+    // Basic Validation
+    if (questions.length === 0) {
+      toast.error("Please add at least one question to create a quiz.");
+      return;
+    }
 
-  const handleContinue = () => {
-    proceedToNextStep();
+    // Extracting question details without 'circleCount'
+    const quizQuestions = questions.map(({ circleCount, ...rest }) => ({
+      ...rest,
+    }));
+
+    // Get quizDetails
+    const quizDetails = {
+      userId: userDetails?.user?._id,
+      title: quizData?.quizName,
+      quizType: quizData?.quizType,
+      quizTimer: timer,
+      quizQuestions,
+    };
+
+    try {
+      console.log(quizDetails);
+      const response = await createQuiz(quizDetails);
+      console.log(response);
+
+      // Only when successful
+      if (response && response.success) {
+        toast.success("Quiz created successfully!");
+        onNext();
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   const handleAddCircle = () => {
@@ -66,13 +115,13 @@ function QuestionCreator({ proceedToNextStep }) {
       setQuestions((prevQuestions) => [
         ...prevQuestions,
         {
-          questionData: { questionName: "", optionType: "text" },
-          options: [
-            { text: "", image: "" },
-            { text: "", image: "" },
+          questionText: "",
+          questionType: "text",
+          questionOptions: [
+            { optionText: "", optionImageUrl: "", isCorrect: false },
+            { optionText: "", optionImageUrl: "", isCorrect: false },
           ],
           circleCount: 1,
-          timer: "off",
         },
       ]);
       setSelectedQuestionIndex(questions.length);
@@ -89,25 +138,40 @@ function QuestionCreator({ proceedToNextStep }) {
   };
 
   const handleTimerSelect = (selectedTimer, index) => {
+    setTimer(selectedTimer);
+  };
+
+  const handleCorrectOptionSelect = (questionIndex, optionIndex) => {
     updateQuestions((updatedQuestions) => {
-      updatedQuestions[index].timer = selectedTimer;
+      // Reset 'isCorrect' for all options in the current question
+      updatedQuestions[questionIndex].questionOptions.forEach((option) => {
+        option.isCorrect = false;
+      });
+
+      // Set 'isCorrect' to true for the selected option
+      updatedQuestions[questionIndex].questionOptions[
+        optionIndex
+      ].isCorrect = true;
     });
   };
 
   const handleAddOption = (index) => {
     updateQuestions((updatedQuestions) => {
-      const options = updatedQuestions[index].options;
+      const options = updatedQuestions[index].questionOptions;
       if (options.length < 4) {
-        updatedQuestions[index].options = [...options, { text: "", image: "" }];
+        updatedQuestions[index].questionOptions = [
+          ...options,
+          { optionText: "", optionImageUrl: "", isCorrect: false },
+        ];
       }
     });
   };
 
-  const handleDeleteOption = (index, optionIndex) => {
+  const handleDeleteOption = (questionIndex, optionIndex) => {
     updateQuestions((updatedQuestions) => {
-      updatedQuestions[index].options = updatedQuestions[index].options.filter(
-        (_, i) => i !== optionIndex
-      );
+      updatedQuestions[questionIndex].questionOptions = updatedQuestions[
+        questionIndex
+      ].questionOptions.filter((_, i) => i !== optionIndex);
     });
   };
 
@@ -116,43 +180,53 @@ function QuestionCreator({ proceedToNextStep }) {
 
     const renderTextOption = (
       <input
-        className={styles.optionInput}
+        className={styles.textInput}
         type="text"
         id={`textOption${optionIndex}`}
-        value={currentQuestion.options[optionIndex]?.text || ""}
+        value={currentQuestion.questionOptions[optionIndex]?.optionText || ""}
         onChange={(e) =>
-          handleChangeOption(questionIndex, optionIndex, "text", e)
+          handleChangeOption(questionIndex, optionIndex, "optionText", e)
         }
       />
     );
 
     const renderImageOption = (
       <input
-        className={styles.optionInput}
+        className={styles.textInput}
         type="text"
         id={`imageOption${optionIndex}`}
-        value={currentQuestion.options[optionIndex]?.image || ""}
+        value={
+          currentQuestion.questionOptions[optionIndex]?.optionImageUrl || ""
+        }
         onChange={(e) =>
-          handleChangeOption(questionIndex, optionIndex, "image", e)
+          handleChangeOption(questionIndex, optionIndex, "optionImageUrl", e)
         }
       />
     );
 
     return (
-      <div key={optionIndex} className={styles.option}>
-        <input
-          type="radio"
-          id={`tOptions${optionIndex}`}
-          name={`tOptions${questionIndex}`}
-          value={`tOptions${optionIndex}`}
-        />
+      <div key={optionIndex} className={styles.inputGroup}>
+        {quizType && (
+          <input
+            type="radio"
+            className={styles.radioInput}
+            id={`tOptions${optionIndex}`}
+            name={`tOptions${questionIndex}`}
+            value={`tOptions${optionIndex}`}
+            onChange={() =>
+              handleCorrectOptionSelect(questionIndex, optionIndex)
+            }
+            checked={
+              currentQuestion.questionOptions[optionIndex]?.isCorrect || false
+            }
+          />
+        )}
 
-        {currentQuestion.questionData.optionType === "text" && renderTextOption}
+        {currentQuestion.questionType === "text" && renderTextOption}
 
-        {currentQuestion.questionData.optionType === "image" &&
-          renderImageOption}
+        {currentQuestion.questionType === "image" && renderImageOption}
 
-        {currentQuestion.questionData.optionType === "textImage" && (
+        {currentQuestion.questionType === "textImage" && (
           <>
             {renderTextOption}
             {renderImageOption}
@@ -170,33 +244,45 @@ function QuestionCreator({ proceedToNextStep }) {
   };
 
   return (
-    <div className={styles.backdrop}>
-      <div className={`${styles.modalContainer} ${styles.modal}`}>
-        <section className={styles.container}>
-          <div className={styles.questionNumbersContainer}>
-            {questions.map((question, index) => (
-              <div
-                key={index}
-                className={styles.questionNumber}
-                onClick={() => setSelectedQuestionIndex(index)}
-              >
-                <div className={styles.circle}>{index + 1}</div>
-                {index >= 1 && (
-                  <IoIosClose
-                    className={styles.closeButton}
-                    onClick={() => handleRemoveCircle(index)}
-                  />
-                )}
-              </div>
-            ))}
-            {questions.length < 5 && (
-              <FaPlus className={styles.plusIcon} onClick={handleAddCircle} />
-            )}
-            <label>Max 5 questions</label>
+    <section className={styles.questionModal}>
+      <div className={styles.modalBox}>
+        <div className={styles.modalContainer}>
+          <div className={styles.numberField}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "25px",
+              }}
+            >
+              {questions.map((question, index) => (
+                <div
+                  className={styles.circleContainer}
+                  key={index}
+                  onClick={() => setSelectedQuestionIndex(index)}
+                >
+                  {index >= 1 && (
+                    <label
+                      className={styles.closeIcon}
+                      onClick={() => handleRemoveCircle(index)}
+                    >
+                      X
+                    </label>
+                  )}
+                  <span>{index + 1}</span>
+                </div>
+              ))}
+              {questions.length < 5 && (
+                <FaPlus className={styles.plusIcon} onClick={handleAddCircle} />
+              )}
+            </div>
+            <h4 className={styles.maxQuestionsText}>Max 5 questions</h4>
           </div>
 
           {questions.map((question, index) => (
             <div
+              className={styles.questionField}
               key={index}
               style={{
                 display: index === selectedQuestionIndex ? "block" : "none",
@@ -204,45 +290,40 @@ function QuestionCreator({ proceedToNextStep }) {
             >
               <InputComponent
                 type="text"
-                className={styles.questionInput}
+                className={styles.questionFieldInput}
                 placeholder="Question"
-                ariaLabelledby="Question"
                 required
                 onChange={(event) => handleChange(event, index)}
-                value={question.questionData.questionName}
+                value={question.questionText}
               />
 
-              <fieldset className={styles.optionTypeContainer}>
-                <label>Option Type</label>
-                <div className={styles.optionTypes}>
-                  {["text", "image", "textImage"].map((type) => (
-                    <div key={type}>
-                      <input
-                        type="radio"
-                        id={type}
-                        name={`optionType${index}`}
-                        value={type}
-                        checked={question.questionData.optionType === type}
-                        onChange={(event) => handleRadioChange(event, index)}
-                      />
-                      <label htmlFor={type}>
-                        {type.charAt(0).toUpperCase() + type.slice(1)}
-                      </label>
-                    </div>
-                  ))}
-                </div>
+              <fieldset className={styles.optionType}>
+                <label className={styles.optionTypeLegend}>Question Type</label>
+                {["text", "image", "textImage"].map((type, i) => (
+                  <div className={styles.optionTypeItem} key={i}>
+                    <input
+                      type="radio"
+                      id={type}
+                      name={`questionType${index}`}
+                      value={type}
+                      checked={question.questionType === type}
+                      onChange={(event) => handleRadioChange(event, index)}
+                    />
+                    <label htmlFor={type}>
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </label>
+                  </div>
+                ))}
               </fieldset>
 
-              <div className={styles.questionOptionsContainer}>
-                <div className={styles.optionsContainer}>
-                  {question.options.map((_, optionIndex) =>
+              <div className={styles.container}>
+                <div className={styles.outerRow}>
+                  {question.questionOptions.map((_, optionIndex) =>
                     renderOptionInputs(index, optionIndex)
                   )}
-                  {question.options.length < 4 && (
+                  {question.questionOptions.length < 4 && (
                     <ButtonComponent
                       type="button"
-                      ariaLabel="Add option"
-                      className={`${styles.btn}`}
                       onClick={() => handleAddOption(index)}
                     >
                       Add Option
@@ -250,17 +331,15 @@ function QuestionCreator({ proceedToNextStep }) {
                   )}
                 </div>
 
-                <div className={styles.timer}>
-                  <span className={styles.timerHeading}>Timer</span>
-                  {["off", "5", "10"].map((timerOption) => (
+                <div className={styles.timerContainer}>
+                  <label style={{ fontWeight: "bold" }}>Timer</label>
+                  {[0, 5, 10].map((timerOption) => (
                     <span
                       key={timerOption}
-                      className={`${styles.timerOption} ${
-                        question.timer === timerOption && styles.selected
-                      }`}
+                      className={timer === timerOption ? styles.selected : ""}
                       onClick={() => handleTimerSelect(timerOption, index)}
                     >
-                      {timerOption === "off" ? "OFF" : `${timerOption} Sec`}
+                      {timerOption === 0 ? "OFF" : `${timerOption} Sec`}
                     </span>
                   ))}
                 </div>
@@ -268,10 +347,9 @@ function QuestionCreator({ proceedToNextStep }) {
             </div>
           ))}
 
-          <div className={styles.btnContainer}>
+          <div className={styles.buttonContainer}>
             <ButtonComponent
               type="button"
-              aria-label="Cancel"
               className={`${styles.btn} ${styles.btnCancel}`}
               onClick={handleCancel}
             >
@@ -280,16 +358,15 @@ function QuestionCreator({ proceedToNextStep }) {
 
             <ButtonComponent
               type="button"
-              aria-label="Create Quiz"
-              className={`${styles.btn} ${styles.btnContinue}`}
+              className={styles.createButton}
               onClick={handleContinue}
             >
               Create Quiz
             </ButtonComponent>
           </div>
-        </section>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 

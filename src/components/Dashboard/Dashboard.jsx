@@ -1,50 +1,68 @@
 import React, { useEffect, useState } from "react";
+import { format } from "date-fns";
+import { enUS } from "date-fns/locale";
 import { FaRegEye } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { selectUserData } from "../redux/slices/authenticationSlice";
+import { selectUserData } from "../../redux/slices/authenticationSlice";
 import { analyticsByUser, analyticsByQuiz } from "../../api/quizService";
 import styles from "./Dashboard.module.css";
+import PageLoader from "../PageLoader/PageLoader";
 
 function Dashboard() {
+  const [loading, setLoading] = useState(false);
   const [quizAnalytics, setQuizAnalytics] = useState([]);
   const [userAnalyticsUI, setUserAnalyticsUI] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const dummyDetails = [
-    { message: "Quiz Created", color: "blue" },
-    { message: "Questions Created", color: "green" },
-    { message: "Total Impressions", color: "red" },
-  ];
-  const userDataId = useSelector((state) => selectUserData(state)?._id);
+  const userDetails = useSelector(selectUserData);
 
-  // const dummyArrays = [
-  //   { quizTitle: "Quiz 1", views: 1000, createdDate: "04 Sep, 2023" },
-  //   { quizTitle: "Quiz 2", views: 800, createdDate: "10 Oct, 2023" },
-  //   { quizTitle: "Quiz 3", views: 1200, createdDate: "15 Nov, 2023" },
-  // ];
+  const analyticsDummyDetails = [
+    { message: "Quiz Created", color: "orangered" },
+    { message: "Questions Created", color: "rgb(51, 172, 51)" },
+    { message: "Total Impressions", color: "rgb(43, 43, 202)" },
+  ];
 
   useEffect(() => {
+    if (!userDetails.user) {
+      toast("Please logout and login again.");
+      return;
+    }
+
+    const controller = new AbortController();
+
     setLoading(true);
 
     // IIFE (Immediately Invoked Function Expression)
     (async () => {
       try {
-        if (userDataId) {
-          const userAnalytics = await analyticsByUser(userDataId);
-          setQuizAnalytics(await analyticsByQuiz(userDataId));
+        // Get user analytics details
+        const userAnalytics = await analyticsByUser(userDetails.user._id);
 
-          const userAnalyticsUI = { ...userAnalytics, ...dummyDetails };
-          setUserAnalyticsUI(userAnalyticsUI);
-        }
+        const mergedDetails = analyticsDummyDetails.map((detail, index) => ({
+          total: userAnalytics.data[Object.keys(userAnalytics.data)[index]],
+          ...detail,
+        }));
+        setUserAnalyticsUI(mergedDetails);
+
+        // Get quiz analytics details
+        const response = await analyticsByQuiz(userDetails.user._id);
+        setQuizAnalytics(response.data.quizzes);
       } catch (error) {
-        toast.error(error.response?.data || error.message);
+        toast.error(error.message);
       } finally {
         setLoading(false);
       }
     })();
-  }, [userDataId]);
 
-  return (
+    // Cleanup
+    return () => {
+      // console.log("Abort");
+      controller.abort();
+    };
+  }, [userDetails]);
+
+  return loading ? (
+    <PageLoader />
+  ) : (
     <section className={styles.dashboardContainer}>
       {/* Analytics based on the User */}
       <div className={styles.userDetails}>
@@ -52,31 +70,36 @@ function Dashboard() {
           <div
             key={index}
             className={styles.colorBox}
-            style={{ backgroundColor: item.color }}
+            style={{ color: item.color }}
           >
+            {/* totalQuizzes,  totalQuestions, totalQuizVisitors - all these values merged as 'total'*/}
+            <p className={styles.count}>{item.total}</p>
             <p className={styles.message}>{item.message}</p>
-            {/* Use actual data from userAnalytics instead of hardcoded values */}
-            <p className={styles.count}>{item.quizVisits}</p>
           </div>
         ))}
       </div>
 
       {/* Quiz wise details */}
       <div className={styles.quizDetails}>
+        <h1 className={styles.quizDetailsHeader}>Trending Quizs</h1>
         {quizAnalytics ? (
-          quizAnalytics.map((quiz, index) => (
-            <div key={index} className={styles.quizCard}>
-              <div className={styles.quizInfo}>
-                <h2 className={styles.quizTitle}>{quiz.title}</h2>
-                <label className={styles.views}>
-                  {quiz.quizVisits} <FaRegEye style={{ color: "orange" }} />
+          <div className={styles.quizCardContainer}>
+            {quizAnalytics.map((quiz, index) => (
+              <div key={index} className={styles.quizCard}>
+                <div className={styles.quizInfo}>
+                  <h2 className={styles.quizTitle}>{quiz.title}</h2>
+                  <label className={styles.views}>
+                    {quiz.quizVisits}
+                    <FaRegEye style={{ color: "orange" }} />
+                  </label>
+                </div>
+                <label className={styles.createdDate}>
+                  Created on:{" "}
+                  {format(quiz?.createdAt, "dd MMM yyyy", { locale: enUS })}
                 </label>
               </div>
-              <label className={styles.createdDate}>
-                Created on: {quiz.createdAt}
-              </label>
-            </div>
-          ))
+            ))}
+          </div>
         ) : (
           <p style={{ color: "red" }}>
             You haven't created any Quiz. Click on "Create Quiz" to create your

@@ -1,25 +1,36 @@
+:root {
+  --primary-color: #474444;
+  --secondary-color: #333;
+  --accent-color: green;
+}
+
 .dashboardContainer {
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 80%;
-  margin: 0 auto;
+  margin: 70px 0 0 70px;
+  padding: 20px;
 }
 
 .userDetails {
   display: flex;
   gap: 20px;
+  padding: 20px;
 }
 
 .colorBox {
   width: 150px;
-  height: 150px;
+  height: 100px;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: white;
+  background-color: white;
+  font-weight: 900;
+  text-align: center;
+  flex-wrap: wrap;
 }
 
 .message {
@@ -32,50 +43,60 @@
   margin-top: 5px;
 }
 
-.trendingQuizzes {
-  width: 100%;
+.quizDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
 }
 
 .quizDetailsHeader {
-  color: gray;
-  font-size: 1.2rem;
+  color: var(--primary-color);
+  font-size: 1.5rem;
   font-weight: bold;
   margin-top: 20px;
+  text-align: left;
 }
 
-.quizDetails {
-  display: flex;
-  flex-wrap: wrap;
+.quizCardContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
-  background-color: whitesmoke;
+  width: 100%;
 }
 
 .quizCard {
-  border: 1px solid #ccc;
+  border: 1px solid white;
+  background-color: white;
   padding: 15px;
   border-radius: 5px;
-  height: 80px;
-  flex: 1;
+  /* height: 100px; */
 }
 
 .quizInfo {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: baseline;
+  justify-content: space-between;
 }
 
 .quizTitle {
-  color: gray;
-  font-size: 2rem;
+  color: var(--primary-color);
+  font-size: 1.2rem;
   font-weight: bold;
 }
 
-.views {
-  color: green;
+.views,
+.createdDate {
+  color: var(--accent-color);
   margin-top: 5px;
+  font-weight: 100;
 }
 
+.views {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+}
 .createdDate {
-  color: gray;
-  margin-top: 5px;
+  font-weight: 550;
 }

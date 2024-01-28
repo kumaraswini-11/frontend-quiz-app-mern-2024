@@ -1,5 +1,5 @@
-/* Container styling */
-.backdrop {
+/* Base styles for the blurred background */
+.questionModal {
   position: fixed;
   top: 0;
   left: 0;
@@ -12,236 +12,246 @@
   z-index: 1000;
 }
 
-/* Modal styling */
-.modal {
-  background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
-  width: 100%;
-  max-width: 800px; /* Adjust the max-width as needed */
+/* Styles for the modal box */
+.modalBox {
   position: relative;
-}
-
-/* Modal Container Styling */
-.modalContainer {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* Container Styling */
-.container {
+  background: white;
   width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  border-radius: 5px;
-  padding: 20px;
-  text-align: center;
+  max-width: 600px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Question Numbers Container Styling */
-.questionNumbersContainer {
+/* Styles for the modal container */
+.modalContainer {
+  width: 100%;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  padding: 15px;
+  justify-content: center;
+  color: gray;
+}
+
+/* Styles for the number field */
+.numberField {
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 10px 0;
-}
-
-/* Question Number Styling */
-.questionNumber {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Circle Styling */
-.circle {
-  height: 30px;
-  width: 30px;
-  min-width: 30px;
-  position: relative;
   background-color: white;
-  color: #000;
+}
+
+/* Styles for the number field container */
+.numberFieldContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  font-weight: 400;
+  font-size: 1.4rem;
+}
+
+/* Styles for the circle container */
+.circleContainer {
+  position: relative;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
+  background-color: whitesmoke;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid gray;
+  color: black;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 }
 
-/* Plus Icon Styling */
+/* Styles for the close icon ('x') */
+.closeIcon {
+  position: absolute;
+  top: 5px;
+  right: 3px;
+  cursor: pointer;
+  font-size: x-small;
+  z-index: 1;
+  color: red;
+  transform: translate(50%, -50%);
+  transition: color 0.3s ease;
+}
+
+.closeIcon:hover {
+  color: red;
+}
+
+/* Styles for the plus icon */
 .plusIcon {
   color: gray;
-  cursor: pointer;
+  transition: opacity 0.3s ease;
+  font-size: 1.2rem;
 }
 
-/* Question Input Styling */
-.questionInput {
-  width: 100%;
-  padding: 12px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-  margin-top: 10px;
+.plusIcon:hover {
+  opacity: 0.75;
 }
 
-/* Option Type Container Styling */
-.optionTypeContainer {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 10px;
-  justify-content: flex-start;
-  gap: 15px;
-  border: none;
+/* Styles for the maximum questions text */
+.maxQuestionsText {
+  color: gray;
 }
 
-.optionsContainer {
+.questionField {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 
-/* Option Types Styling */
-.optionTypes {
-  display: flex;
-  justify-content: space-evenly;
+/* Input styles */
+.questionFieldInput {
+  outline: none;
+  margin-top: 15px;
+  width: 100%;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ccc;
+  /* margin-top: 15px; */
 }
 
-/* Question Options Container Styling */
-.questionOptionsContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-/* Option Styling */
-.option {
+/* Styles for the option type container */
+.optionType {
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  border: none;
+  padding: 10px;
+  justify-content: space-between;
+}
+
+.optionTypeLegend {
+  font-weight: bold;
+}
+
+.optionTypeItem {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* 3rd step */
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Outer Row styles */
+.outerRow {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
   gap: 5px;
-  margin-top: 10px;
+  width: 85%;
 }
 
-/* Option Input Styling */
-.optionInput {
-  padding: 5px;
+/* Input group styles */
+.inputGroup {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  gap: 10px;
+}
+
+/* Radio input styles */
+.radioInput {
+  /* margin-right: 5px; */
+  width: 15px;
+}
+
+/* Text input styles */
+.textInput {
+  width: auto;
+  padding: 10px;
+  border: 1px solid #ccc;
   border-radius: 5px;
-  box-sizing: border-box;
 }
 
-/* Delete Icon Styling */
+/* Delete icon styles */
 .deleteIcon {
+  width: 15px;
+  height: 15px;
   color: red;
   cursor: pointer;
-  /* position: absolute;
-  top: -5px;
-  right: -5px; */
 }
 
-/* Timer Styling */
-.timer {
+/* Timer container styles */
+.timerContainer {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  margin-top: 10px;
-}
-
-/* Timer Button Styling */
-.timerBtn {
-  margin-top: 10px;
-}
-
-/* Buttons Styling */
-.btnContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  margin-top: 15px;
-}
-
-/* Button Styling */
-.btn {
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: opacity 0.3s ease;
-  margin-top: 10px;
-}
-
-/* Cancel Button Styling */
-.btnCancel {
-  background-color: #fff;
-  color: #000;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-.btnCancel:hover {
-  opacity: 0.75;
-}
-
-/* Continue Button Styling */
-.btnContinue {
-  background-color: #4caf50;
-  color: #fff;
-}
-
-.btnContinue:hover {
-  opacity: 0.75;
-}
-
-/* Option Styling */
-.option {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
+  flex-direction: column; /* Timers in a column */
   gap: 5px;
-  margin-top: 10px;
-  background-color: white;
+  justify-content: flex-end;
+  /* Adjust the margin between input row and timer container */
 }
 
-/* Option Input Styling */
-.optionInput {
+/* Additional styles for timer spans */
+.timerContainer span {
   padding: 5px;
+  border: 1px solid #ccc;
   border-radius: 5px;
-  box-sizing: border-box;
-  width: calc(50% - 5px);
-  margin-right: 5px;
-}
-
-/* Timer Styling */
-.timer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-/* Timer Heading Styling */
-.timerHeading {
-  font-size: 0.9rem;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-/* Timer Button Styling */
-.timerOption {
-  /* margin-top: 5px; */
-  padding: 2px 5px;
+  font-size: small;
   cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-  display: inline-block;
 }
 
-.timerOption.selected {
-  background-color: #ff4d4f;
-  color: #fff;
+.timerContainer span :hover and :active {
+  background-color: rgb(202, 79, 79);
+  color: white;
+}
+
+/* Button styles */
+button {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: white;
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+  font-weight: 700;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 55%;
+  margin-left: 25px;
+  /* Smooth transition on hover */
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  opacity: 0.75;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.createButton {
+  background-color: #60b84b;
+  color: white;
+}
+
+.selected {
+  background-color: rgb(214, 35, 35);
+  color: white;
+}
+
+/* Responsive adjustments for small screens */
+@media screen and (max-width: 600px) {
+  .optionType {
+    flex-direction: column;
+  }
+
+  .optionType label {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .modalBox {
+    padding: 10px;
+  }
 }

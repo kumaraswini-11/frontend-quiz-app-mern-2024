@@ -4,12 +4,24 @@ import axiosInstance from "./axiosConfig";
 
 export const analyticsByUser = async (userId) => {
   const endpoint = `/quizzes/user-analytics/${userId}`;
-  const response = await axiosInstance.post(endpoint);
+  const response = await axiosInstance.get(endpoint);
   return response.data;
 };
 
 export const analyticsByQuiz = async (userId) => {
   const endpoint = `/quizzes/quiz-analytics/${userId}`;
-  const response = await axiosInstance.post(endpoint);
+  const response = await axiosInstance.get(endpoint);
   return response.data;
+};
+
+export const createQuiz = async (quizeDetails) => {
+  const endpoint = "/quizzes/create-quiz";
+  const response = await axiosInstance.post(endpoint, quizeDetails);
+  return response;
+};
+
+export const deleteQuiz = async (quizId) => {
+  const endpoint = `/quizzes/delete-quiz/${quizId}`;
+  const response = await axiosInstance.post(endpoint, quizId);
+  return response;
 };

@@ -1,0 +1,29 @@
+.formDivContainer {
+  width: 60%;
+  margin: 0 auto;
+  margin-top: 5px;
+  padding: 10px;
+  justify-content: left;
+}
+
+.formDivContainer div {
+  margin: 0 auto;
+  display: flex;
+  gap: 10px;
+  justify-content: right;
+  margin-top: 5px;
+}
+.formDivContainer label {
+  text-align: right;
+}
+.formDivContainer input {
+  padding: 5px;
+  border-radius: 5px 5px 0 0;
+  width: 65%;
+}
+.button {
+  /* margin: 0 auto; */
+  margin-top: 15px;
+  text-align: center;
+  background: #a9bcff;
+}

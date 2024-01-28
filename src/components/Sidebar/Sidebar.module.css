@@ -1,58 +1,93 @@
-/* Sidebar Container */
+:root {
+  --primary-color: #474444;
+  --secondary-color: #333;
+  --hover-color: #ccc;
+}
+
 .sidebar {
-  width: 240px;
-  height: 100%;
-  background-color: #f0f0f0; /* Light gray background */
+  max-width: 180px;
+  height: 100vh;
+  background-color: white;
   display: flex;
   flex-direction: column;
   padding: 16px;
+  color: var(--primary-color);
+  font-weight: 700;
+  flex: 1;
 }
 
-/* Sidebar Header */
-.sidebar-header {
+/* Sidebar Header (Logo) */
+.sidebarHeader {
   text-align: center;
   margin-bottom: 20px;
+  font-weight: 900;
 }
 
-/* Sidebar Navigation */
-.sidebar-nav {
+/* Sidebar Navigation (Navbars in the middle) */
+.sidebarNav {
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
 }
 
-/* Sidebar Link */
-.sidebar-link {
+/* Styling for each navigation link */
+.sidebarLink {
   display: block;
   padding: 10px;
-  color: #333; /* Dark text color */
+  color: var(--secondary-color);
   text-decoration: none;
   transition: background-color 0.3s ease;
 }
 
+.sidebarLink:hover {
+  background-color: var(--hover-color);
+  min-width: 90%;
+  border-radius: 5%;
+}
+
 /* Sidebar Active Link */
-.sidebar-link.active {
-  background-color: #fff; /* White background for active link */
-  color: #007bff; /* Blue text color for active link */
+.sidebarLink:active {
+  background-color: #fff;
+  border-radius: 5%;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 /* Sidebar Separator */
-.sidebar-separator {
+.sidebarSeparator {
   height: 1px;
-  background-color: #ccc; /* Separator color */
+  background-color: #ccc;
   margin: 10px 0;
 }
 
-/* Sidebar Logout Button */
-.sidebar-logout {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #fff; /* White background for button */
-  color: #333; /* Dark text color for button */
-  border: 1px solid #ccc; /* Border color for button */
+/* Sidebar Logout Button (at the bottom) */
+.sidebarLogout {
+  font-size: 1rem;
+  font-weight: 600;
+  /* margin-top: auto; */
+  background: none;
+  border: none;
+  padding: 0;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  text-align: center;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  /* height: 20px; */
 }
 
 /* Hover effect for Logout Button */
-.sidebar-logout:hover {
-  background-color: #eee; /* Light gray background on hover */
+.sidebarLogout:hover {
+  color: black;
+}
+
+/* Media Queries for Responsive Design */
+@media screen and (max-width: 768px) {
+  .appContainer {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    max-width: 100%;
+  }
 }

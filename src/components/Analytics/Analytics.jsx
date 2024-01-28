@@ -1,125 +1,121 @@
 import React, { useEffect, useState } from "react";
-import {
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { Link } from "react-router-dom";
+import { FaEdit } from "react-icons/fa";
+import { RiDeleteBin5Fill } from "react-icons/ri";
+import { IoShareSocialSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { selectUserData } from "../redux/slices/authenticationSlice";
-import { analyticsByQuiz } from "../../api/quizService";
+import { selectUserData } from "../../redux/slices/authenticationSlice";
+import { analyticsByQuiz, deleteQuiz } from "../../api/quizService";
 import styles from "./Analytics.module.css";
+import PageLoader from "../PageLoader/PageLoader";
 
 function Analytics() {
   const [loading, setLoading] = useState(false);
-  const userId = useSelector((state) => selectUserData(state)?._id);
+  const [quizzes, setQuizzes] = useState([]);
+  const userDetails = useSelector(selectUserData);
 
   useEffect(() => {
-    setLoading(true);
-
-    // IIFE (Immediately Invoked Function Expression)
-    (async () => {
+    const fetchData = async () => {
+      setLoading(true);
       try {
-        if (userId) {
-          const response = await analyticsByQuiz(userId);
+        if (userDetails?.user) {
+          const apiResponse = await analyticsByQuiz(userDetails.user._id);
+          setQuizzes(apiResponse.data.quizzes);
         }
       } catch (error) {
-        toast.error(error.response?.data || error.message);
+        toast.error(error.response?.user || error.message);
       } finally {
         setLoading(false);
       }
-    })();
-  }, [userId]);
+    };
 
-  const tableConfigurationInfo = useReactTable({
-    response,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    state: {
-      sorting: sorting,
-      globalFilter: filtering,
-    },
-    onSortingChange: setSorting,
-    onGlobalFilterChange: setFiltering,
-  });
+    fetchData();
+  }, [userDetails?.user]);
 
-  const createTable = (
-    <>
-      <table>
-        <thead>
-          {tableConfigurationInfogetHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                >
-                  {header.isPlaceholder ? null : (
-                    <div>
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      {
-                        { asc: "🔼", desc: "🔽" }[
-                          header.column.getIsSorted() ?? null
-                        ]
-                      }
-                    </div>
-                  )}
-                </th>
-              ))}
+  const handleEdit = (id) => {
+    console.log(`Editing item with id: ${id}`);
+    // Redirect to the edit page
+    // history.push(`/edit-quiz/${id}`);
+    toast("Editing feature will be implemented soon.");
+  };
+
+  const handleDelete = async (quizId) => {
+    try {
+      const res = await deleteQuiz(quizId);
+
+      if (res.status === 200) {
+        setQuizzes((prevQuizzes) =>
+          prevQuizzes.filter((quiz) => quiz._id !== quizId)
+        );
+        toast.success("Quiz deleted successfully.");
+      }
+    } catch (error) {
+      toast("ERROR: Deleting");
+    }
+  };
+
+  const handleCopyLink = (quizLink) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(quizLink);
+      toast.success("Link copied to clipboard!");
+    } else {
+      toast.error("Clipboard access not supported by your browser.");
+    }
+  };
+
+  return (
+    <section className={styles.container}>
+      {loading ? (
+        <PageLoader />
+      ) : (
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>S.No.</th>
+              <th>Quiz Name</th>
+              <th>Created On</th>
+              <th>Impressions</th>
+              {/* Edit, Delete, Share Action */}
+              <th></th>
+              {/* Question Wise Analysis */}
+              <th></th>
             </tr>
-          ))}
-        </thead>
-
-        <tbody>
-          {tableConfigurationInfogetRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </thead>
+          <tbody>
+            {quizzes.map((quiz, index) => (
+              <tr key={quiz._id}>
+                <td>{index + 1}</td>
+                <td>{quiz.title}</td>
+                <td>{quiz.createdAt}</td>
+                <td>{quiz.quizVisits}</td>
+                <td>
+                  <FaEdit
+                    className={styles.icon}
+                    onClick={() => handleEdit(quiz._id)}
+                  />
+                  <RiDeleteBin5Fill
+                    className={styles.icon}
+                    onClick={() => handleDelete(quiz._id)}
+                  />
+                  <IoShareSocialSharp
+                    className={styles.icon}
+                    onClick={() => handleCopyLink(quiz.quizLink)}
+                  />
                 </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-        <tfoot></tfoot>
-      </table>
-      <div>
-        <button onClick={() => tableConfigurationInfosetPageIndex(0)}>
-          First page
-        </button>
-        <button
-          disabled={!tableConfigurationInfogetCanPreviousPage()}
-          onClick={() => tableConfigurationInfopreviousPage()}
-        >
-          Previous page
-        </button>
-        <button
-          disabled={!tableConfigurationInfogetCanNextPage()}
-          onClick={() => tableConfigurationInfonextPage()}
-        >
-          Next page
-        </button>
-        <button
-          onClick={() =>
-            tableConfigurationInfosetPageIndex(
-              tableConfigurationInfogetPageCount() - 1
-            )
-          }
-        >
-          Last page
-        </button>
-      </div>
-    </>
+                <td>
+                  <Link to={`question-wise-analyis/${quiz._id}`}>
+                    Question Wise Analysis
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      <p>{`{more quiz can be added}`}</p>
+    </section>
   );
-
-  return loading ? "Loading..." : <section>{createTable}</section>;
 }
 
 export default Analytics;

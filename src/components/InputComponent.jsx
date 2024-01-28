@@ -16,7 +16,7 @@ const InputComponent = forwardRef(function Input(
   const generatedId = useId();
 
   return (
-    <div className="">
+    <div>
       {/* Rendering a previous label if the 'label' prop is provided */}
       {prevLabel && (
         <label htmlFor={generatedId} className={prevLabelClassName}>

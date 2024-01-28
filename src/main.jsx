@@ -1,10 +1,14 @@
 import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor, store } from "./redux/store.js";
 import { ToastContainer } from "react-toastify";
-import { store } from "./redux/store.js";
-import App from "./App.jsx";
 import { PageLoader, AuthLayout } from "./components";
 import "./index.css";
 
@@ -20,40 +24,49 @@ const QuestionWiseAnalysis = lazy(() =>
 const ErrorBoundary = lazy(() => import("./pages/ErrorBoundaryPage.jsx"));
 
 const route = createBrowserRouter([
-  // Unprotected route
   {
     path: "/",
-    element: <App />,
-    // errorElement: <ErrorBoundary />,
-    children: [
-      { index: true, element: <Signup /> },
-      { path: "login", element: <Login /> },
-      // { path: "play-quiz/:slug", element: <SharedQuiz /> },
-    ],
-  },
-
-  // Protected routes
-  {
-    path: "/app",
     element: <AuthLayout />,
     // errorElement: <ErrorBoundary />,
     children: [
-      { index: true, element: <Dashboard /> },
-      { path: "/analytics", element: <Analytics /> },
-      { path: "/create-quiz", element: <CreateQuiz /> },
+      // Unprotected route
+      { index: true, element: <Navigate to="signup" replace /> },
+      { path: "signup", element: <Signup /> },
+      { path: "login", element: <Login /> },
+
+      // Protected routes
       {
-        path: "/question-wise-analyis",
-        element: <QuestionWiseAnalysis />,
+        path: "app/",
+        children: [
+          { index: true, element: <Navigate to="/app/dashboard" replace /> },
+          { path: "dashboard", element: <Dashboard /> },
+          { path: "create-quiz", element: <CreateQuiz /> },
+          {
+            path: "analytics",
+            element: <Analytics />,
+            children: [
+              {
+                path: "question-wise-analyis/:quizId",
+                element: <QuestionWiseAnalysis />,
+              },
+            ],
+          },
+        ],
       },
+
+      // Shared link
+      // { path: "play-quiz/:link", element: <SharedQuiz /> },
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <Suspense fallback={<PageLoader />}>
-      <RouterProvider router={route} />
-      <ToastContainer />
-    </Suspense>
+    <PersistGate loading={null} persistor={persistor}>
+      <Suspense fallback={<PageLoader />}>
+        <RouterProvider router={route} />
+        <ToastContainer />
+      </Suspense>
+    </PersistGate>
   </Provider>
 );

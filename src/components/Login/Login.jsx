@@ -45,17 +45,17 @@ function Login() {
 
       // Only when successful
       if (response && response.success) {
-        dispatch(loginSuccess(response));
+        dispatch(loginSuccess(response.data));
         toast.success("User logged in successfully!");
 
         // Add a delay before navigation
         setTimeout(() => {
-          navigate("/app");
+          navigate("/app/dashboard");
         }, 1000);
       }
     } catch (error) {
       // Display error message using toast
-      toast.error(error.response?.data || error.message);
+      toast.error(error.message);
     } finally {
       // Set loading to false regardless of success or failure
       setLoading(false);
@@ -63,40 +63,42 @@ function Login() {
   };
 
   return (
-    <form ref={formRef} onSubmit={handleOnSubmit}>
-      {/* Input fields for email and password */}
-      <InputComponent
-        prevLabel="Email"
-        prevLabelClassName={styles.label}
-        type="email"
-        className={styles.input}
-        ariaLabelledby="Email"
-        required
-        onChange={handleChange}
-        name="email"
-        autoComplete="off"
-      />
-      <InputComponent
-        prevLabel="Password"
-        prevLabelClassName={styles.label}
-        type="password"
-        className={styles.input}
-        ariaLabelledby="Password"
-        required
-        onChange={handleChange}
-        name="password"
-        autoComplete="off"
-      />
+    <form ref={formRef} onSubmit={handleOnSubmit} className={styles.formUi}>
+      <div className={styles.formDivContainer}>
+        {/* Input fields for email and password */}
+        <InputComponent
+          prevLabel="Email"
+          prevLabelClassName={styles.label}
+          type="email"
+          className={styles.input}
+          ariaLabelledby="Email"
+          required
+          onChange={handleChange}
+          name="email"
+          autoComplete="off"
+        />
+        <InputComponent
+          prevLabel="Password"
+          prevLabelClassName={styles.label}
+          type="password"
+          className={styles.input}
+          ariaLabelledby="Password"
+          required
+          onChange={handleChange}
+          name="password"
+          autoComplete="off"
+        />
 
-      {/* Login button component */}
-      <ButtonComponent
-        type="submit"
-        aria-label="Logging into the account"
-        className={styles.button}
-        disabled={loading}
-      >
-        {loading ? "Login..." : "Login"}
-      </ButtonComponent>
+        {/* Login button component */}
+        <ButtonComponent
+          type="submit"
+          aria-label="Logging into the account"
+          className={styles.button}
+          disabled={loading}
+        >
+          {loading ? "Login..." : "Login"}
+        </ButtonComponent>
+      </div>
     </form>
   );
 }

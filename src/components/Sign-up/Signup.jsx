@@ -58,20 +58,15 @@ const Signup = () => {
       }
     } catch (error) {
       // Handle error at the component level if needed
-      toast.error(error.response?.data || error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false); // Corrected from setLoading(true)
     }
   };
 
   return (
-    <main className={styles.container}>
-      <h1 className={styles.title}>QUIZZIE</h1>
-      <div className={styles.navigation}>
-        <nav className={styles.link}>Sign Up</nav>
-        <nav className={styles.link}>Login</nav>
-      </div>
-      <form ref={formRef} onSubmit={handleOnSubmit}>
+    <form ref={formRef} onSubmit={handleOnSubmit}>
+      <div className={styles.formDivContainer}>
         {/* Input fields */}
         {["name", "email", "password", "confirmPassword"].map((fieldName) => (
           <InputComponent
@@ -97,10 +92,10 @@ const Signup = () => {
           className={styles.button}
           disabled={loading}
         >
-          {loading ? "Sign Up..." : "Sign Up"}
+          {loading ? "Sign-Up..." : "Sign-Up"}
         </ButtonComponent>
-      </form>
-    </main>
+      </div>
+    </form>
   );
 };
 
