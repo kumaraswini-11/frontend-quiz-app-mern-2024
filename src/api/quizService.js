@@ -22,6 +22,6 @@ export const createQuiz = async (quizeDetails) => {
 
 export const deleteQuiz = async (quizId) => {
   const endpoint = `/quizzes/delete-quiz/${quizId}`;
-  const response = await axiosInstance.post(endpoint, quizId);
+  const response = await axiosInstance.post(endpoint);
   return response;
 };

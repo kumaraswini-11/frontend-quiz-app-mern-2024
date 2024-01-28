@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin5Fill } from "react-icons/ri";
@@ -35,8 +36,6 @@ function Analytics() {
 
   const handleEdit = (id) => {
     console.log(`Editing item with id: ${id}`);
-    // Redirect to the edit page
-    // history.push(`/edit-quiz/${id}`);
     toast("Editing feature will be implemented soon.");
   };
 
@@ -44,14 +43,14 @@ function Analytics() {
     try {
       const res = await deleteQuiz(quizId);
 
-      if (res.status === 200) {
+      if (res.success) {
         setQuizzes((prevQuizzes) =>
           prevQuizzes.filter((quiz) => quiz._id !== quizId)
         );
         toast.success("Quiz deleted successfully.");
       }
     } catch (error) {
-      toast("ERROR: Deleting");
+      toast.error("Error deleting quiz");
     }
   };
 
@@ -69,51 +68,57 @@ function Analytics() {
       {loading ? (
         <PageLoader />
       ) : (
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>S.No.</th>
-              <th>Quiz Name</th>
-              <th>Created On</th>
-              <th>Impressions</th>
-              {/* Edit, Delete, Share Action */}
-              <th></th>
-              {/* Question Wise Analysis */}
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {quizzes.map((quiz, index) => (
-              <tr key={quiz._id}>
-                <td>{index + 1}</td>
-                <td>{quiz.title}</td>
-                <td>{quiz.createdAt}</td>
-                <td>{quiz.quizVisits}</td>
-                <td>
-                  <FaEdit
-                    className={styles.icon}
-                    onClick={() => handleEdit(quiz._id)}
-                  />
-                  <RiDeleteBin5Fill
-                    className={styles.icon}
-                    onClick={() => handleDelete(quiz._id)}
-                  />
-                  <IoShareSocialSharp
-                    className={styles.icon}
-                    onClick={() => handleCopyLink(quiz.quizLink)}
-                  />
-                </td>
-                <td>
-                  <Link to={`question-wise-analyis/${quiz._id}`}>
-                    Question Wise Analysis
-                  </Link>
-                </td>
+        <>
+          <h2 className={styles.heading}>Quiz Analytics</h2>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>S.No.</th>
+                <th>Quiz Name</th>
+                <th>Created On</th>
+                <th>Impressions</th>
+                <th></th>
+                <th></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {quizzes.map((quiz, index) => (
+                <tr key={quiz._id}>
+                  <td>{index + 1}</td>
+                  <td>{quiz.title}</td>
+                  <td>{format(quiz?.createdAt, "dd MMM yyyy")}</td>
+                  <td>{quiz.quizVisits}</td>
+                  <td>
+                    <div className={styles.icon}>
+                      <FaEdit
+                        className={styles.editIcon}
+                        onClick={() => handleEdit(quiz._id)}
+                      />
+                      <RiDeleteBin5Fill
+                        className={styles.deleteIcon}
+                        onClick={() => handleDelete(quiz._id)}
+                      />
+                      <IoShareSocialSharp
+                        className={styles.shareIcon}
+                        onClick={() => handleCopyLink(quiz.quizLink)}
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    <Link
+                      to={`question-wise-analyis/${quiz._id}`}
+                      style={{ color: "black" }}
+                    >
+                      Question Wise Analysis
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
       )}
-      <p>{`{more quiz can be added}`}</p>
+      <p className={styles.end}>{`{more quiz can be added}`}</p>
     </section>
   );
 }

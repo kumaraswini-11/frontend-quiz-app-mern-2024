@@ -41,15 +41,10 @@ const route = createBrowserRouter([
           { index: true, element: <Navigate to="/app/dashboard" replace /> },
           { path: "dashboard", element: <Dashboard /> },
           { path: "create-quiz", element: <CreateQuiz /> },
+          { path: "analytics", element: <Analytics /> },
           {
-            path: "analytics",
-            element: <Analytics />,
-            children: [
-              {
-                path: "question-wise-analyis/:quizId",
-                element: <QuestionWiseAnalysis />,
-              },
-            ],
+            path: "question-wise-analyis/:quizId",
+            element: <QuestionWiseAnalysis />,
           },
         ],
       },

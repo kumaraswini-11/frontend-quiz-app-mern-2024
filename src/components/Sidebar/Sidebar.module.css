@@ -5,7 +5,7 @@
 }
 
 .sidebar {
-  max-width: 180px;
+  max-width: 200px;
   height: 100vh;
   background-color: white;
   display: flex;
@@ -39,6 +39,7 @@
   color: var(--secondary-color);
   text-decoration: none;
   transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
 .sidebarLink:hover {
