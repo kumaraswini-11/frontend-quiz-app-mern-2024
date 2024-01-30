@@ -4,7 +4,10 @@ import { enUS } from "date-fns/locale";
 import { FaRegEye } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { selectUserData } from "../../redux/slices/authenticationSlice";
+import {
+  selectIsAuthenticated,
+  selectUserData,
+} from "../../redux/slices/authenticationSlice";
 import { analyticsByUser, analyticsByQuiz } from "../../api/quizService";
 import styles from "./Dashboard.module.css";
 import PageLoader from "../PageLoader/PageLoader";
@@ -20,14 +23,11 @@ function Dashboard() {
     { message: "Questions Created", color: "rgb(51, 172, 51)" },
     { message: "Total Impressions", color: "rgb(43, 43, 202)" },
   ];
+  const isAlreadyLoggedIn = useSelector(selectIsAuthenticated);
 
   useEffect(() => {
-    if (!userDetails.user) {
-      toast("Please logout and login again.");
-      return;
-    }
-
     const controller = new AbortController();
+    const signal = controller.signal;
 
     setLoading(true);
 
@@ -35,7 +35,10 @@ function Dashboard() {
     (async () => {
       try {
         // Get user analytics details
-        const userAnalytics = await analyticsByUser(userDetails.user._id);
+        const userAnalytics = await analyticsByUser(
+          userDetails?.user._id,
+          signal
+        );
 
         const mergedDetails = analyticsDummyDetails.map((detail, index) => ({
           total: userAnalytics.data[Object.keys(userAnalytics.data)[index]],
@@ -44,10 +47,11 @@ function Dashboard() {
         setUserAnalyticsUI(mergedDetails);
 
         // Get quiz analytics details
-        const response = await analyticsByQuiz(userDetails.user._id);
+        const response = await analyticsByQuiz(userDetails.user._id, signal);
         setQuizAnalytics(response.data.quizzes);
       } catch (error) {
-        toast.error(error.message);
+        // toast.error(error.message);
+        // console.log(error);
       } finally {
         setLoading(false);
       }
@@ -94,8 +98,9 @@ function Dashboard() {
                   </label>
                 </div>
                 <label className={styles.createdDate}>
-                  Created on:{" "}
-                  {format(quiz?.createdAt, "dd MMM yyyy", { locale: enUS })}
+                  {` Created on: ${format(quiz?.createdAt, "dd MMM yyyy", {
+                    locale: enUS,
+                  })}`}
                 </label>
               </div>
             ))}

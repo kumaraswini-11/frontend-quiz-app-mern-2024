@@ -1,8 +1,11 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { logoutSuccess } from "../../redux/slices/authenticationSlice";
+import {
+  selectUserData,
+  logoutSuccess,
+} from "../../redux/slices/authenticationSlice";
 import { ButtonComponent } from "../";
 import { logout } from "../../api/authService";
 import styles from "./Sidebar.module.css";

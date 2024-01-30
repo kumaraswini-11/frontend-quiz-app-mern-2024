@@ -20,7 +20,7 @@ function CreateQuizPage() {
       case 2:
         return <QuestionCreator onNext={handleNext} />;
       case 3:
-        return <ShareQuiz onNext={handleNext} />;
+        return <ShareQuiz />;
       default:
         return <div>Invalid step</div>;
     }

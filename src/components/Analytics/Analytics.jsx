@@ -5,33 +5,47 @@ import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { IoShareSocialSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectUserData } from "../../redux/slices/authenticationSlice";
+import { setAnalyticDetails } from "../../redux/slices/quizSlice";
 import { analyticsByQuiz, deleteQuiz } from "../../api/quizService";
 import styles from "./Analytics.module.css";
 import PageLoader from "../PageLoader/PageLoader";
+import { DeleteConfirmationModal } from "../";
 
 function Analytics() {
   const [loading, setLoading] = useState(false);
   const [quizzes, setQuizzes] = useState([]);
   const userDetails = useSelector(selectUserData);
+  const [showModal, setShowModal] = useState(false);
+  const [quizId, setQuizId] = useState(null);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchData = async () => {
+    (async () => {
       setLoading(true);
       try {
         if (userDetails?.user) {
           const apiResponse = await analyticsByQuiz(userDetails.user._id);
-          setQuizzes(apiResponse.data.quizzes);
+
+          const updatedQuizzes = apiResponse.data.quizzes.map((record) => {
+            // updated the quizLink for each record
+            return {
+              ...record,
+              quizLink: `${window.location.hostname}/play-quiz/${record.quizLink}`,
+            };
+          });
+
+          setQuizzes(updatedQuizzes);
+          dispatch(setAnalyticDetails(updatedQuizzes));
         }
       } catch (error) {
         toast.error(error.response?.user || error.message);
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchData();
+    })();
   }, [userDetails?.user]);
 
   const handleEdit = (id) => {
@@ -39,11 +53,12 @@ function Analytics() {
     toast("Editing feature will be implemented soon.");
   };
 
-  const handleDelete = async (quizId) => {
+  const handleDelete = async () => {
+    // If confirm then only delete
     try {
       const res = await deleteQuiz(quizId);
 
-      if (res.success) {
+      if (res.status < 400) {
         setQuizzes((prevQuizzes) =>
           prevQuizzes.filter((quiz) => quiz._id !== quizId)
         );
@@ -51,6 +66,8 @@ function Analytics() {
       }
     } catch (error) {
       toast.error("Error deleting quiz");
+    } finally {
+      setShowModal(false);
     }
   };
 
@@ -96,7 +113,10 @@ function Analytics() {
                       />
                       <RiDeleteBin5Fill
                         className={styles.deleteIcon}
-                        onClick={() => handleDelete(quiz._id)}
+                        onClick={() => {
+                          setQuizId(quiz._id);
+                          setShowModal(true);
+                        }}
                       />
                       <IoShareSocialSharp
                         className={styles.shareIcon}
@@ -106,7 +126,7 @@ function Analytics() {
                   </td>
                   <td>
                     <Link
-                      to={`question-wise-analyis/${quiz._id}`}
+                      to={`/app/question-wise-analyis/${quiz._id}`}
                       style={{ color: "black" }}
                     >
                       Question Wise Analysis
@@ -119,6 +139,17 @@ function Analytics() {
         </>
       )}
       <p className={styles.end}>{`{more quiz can be added}`}</p>
+
+      {/* Show delete modal */}
+      {showModal && (
+        <DeleteConfirmationModal
+          confirmLabel="Confirm Delete"
+          cancelLabel="Cancel"
+          onConfirm={handleDelete}
+          onCancel={(e) => setShowModal(false)}
+          onClose={(e) => setShowModal(false)}
+        />
+      )}
     </section>
   );
 }

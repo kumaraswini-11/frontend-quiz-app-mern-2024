@@ -14,6 +14,7 @@ function AuthLayout() {
     if (isAlreadyLoggedIn) {
       // toast.error("Please log in to access the application.", {
       //   position: "top-center",
+      // });
       navigate("/app/dashboard");
     } else {
       navigate("/login");

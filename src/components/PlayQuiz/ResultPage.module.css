@@ -1,0 +1,14 @@
+.resultConatiner {
+  background: white;
+  margin: 0 auto;
+  border-radius: 10px;
+  width: 50%;
+}
+.subResultConatiner {
+  width: 75%;
+  display: flex;
+  flex-direction: column;
+  font-weight: 700;
+  font-size: 2.5rem;
+  color: #ccc;
+}

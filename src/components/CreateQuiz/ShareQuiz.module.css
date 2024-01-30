@@ -1,26 +1,39 @@
 /* Container styling */
-.shareQuizContainer {
+.backdrop {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
 }
 
 /* Modal styling */
 .modal {
-  background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
-  width: 100%;
-  max-width: 500px;
   position: relative;
+  background: white;
+  width: 100%;
+  max-width: 600px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Content styling */
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  justify-content: center;
+  color: gray;
+  padding: 20px;
+  background: white;
+  /* text-align: center; */
 }
 
 /* Close container styling */
@@ -35,6 +48,7 @@
   cursor: pointer;
   font-size: 24px;
   color: #333;
+  align-self: flex-end;
 }
 
 /* Content styling */
@@ -54,7 +68,9 @@
 .infoText {
   font-size: 16px;
   margin-bottom: 20px;
-  color: #666;
+  background: #ccc;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 /* Share button styling */

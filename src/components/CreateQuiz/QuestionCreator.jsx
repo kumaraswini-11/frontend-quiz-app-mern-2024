@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { FaPlus } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { InputComponent, ButtonComponent } from "..";
 import styles from "./QuestionCreator.module.css";
 import { createQuiz } from "../../api/quizService";
 import { selectUserData } from "../../redux/slices/authenticationSlice";
-import { selectQuizDetails } from "../../redux/slices/quizSlice";
+import { selectQuizDetails, setShareLink } from "../../redux/slices/quizSlice";
 
 const initialQuestion = {
   questionText: "",
-  questionType: "",
+  questionType: "text",
   questionOptions: [
     { optionText: "", optionImageUrl: "", isCorrect: false },
     { optionText: "", optionImageUrl: "", isCorrect: false },
@@ -26,10 +26,11 @@ function QuestionCreator({ onNext }) {
   let quizData = useSelector(selectQuizDetails);
 
   const [quizType, setQuizType] = useState(false);
-  const [timer, setTimer] = useState(5);
+  const [timer, setTimer] = useState(0);
   const [questions, setQuestions] = useState([initialQuestion]);
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // Use userDetails and quizDetails here
@@ -74,39 +75,92 @@ function QuestionCreator({ onNext }) {
   const handleCancel = () => {
     navigate(-1);
   };
-  const handleContinue = async () => {
-    // Basic Validation
-    if (questions.length === 0) {
-      toast.error("Please add at least one question to create a quiz.");
-      return;
+
+  const validateDataBeforeSave = () => {
+    // if (questions.length === 0) {
+    //   toast.error("Please add at least one question to create a quiz.");
+    //   return false;
+    // }
+
+    for (const question of questions) {
+      // QuestionText is not empty
+      if (!question.questionText) {
+        toast.error("You must give a question for each opened question tab.");
+        return false;
+      }
+
+      if (quizData?.quizType === "questionAndAnswer") {
+        // QuestionType is not empty
+        if (!question.questionType) {
+          toast.error(
+            "You must select a question type for each opened question tab."
+          );
+          return false;
+        }
+      } else {
+        return true;
+      }
+
+      // At least one option has isCorrect set to true
+      const hasCorrectOption = question.questionOptions.some(
+        (option) => option.isCorrect
+      );
+
+      if (!hasCorrectOption) {
+        toast.error("Each question must have at least one correct option.");
+        return false;
+      }
+
+      // Either optionText or optionImageUrl is filled for each option
+      const isValidOptions = question.questionOptions.every(
+        (option) =>
+          (option.optionText && !option.optionImageUrl) ||
+          (!option.optionText && option.optionImageUrl) ||
+          (option.optionText && option.optionImageUrl)
+      );
+
+      if (!isValidOptions) {
+        toast.error(
+          "Each option in a question must have either the text or image input field filled."
+        );
+        return false;
+      }
     }
 
-    // Extracting question details without 'circleCount'
-    const quizQuestions = questions.map(({ circleCount, ...rest }) => ({
-      ...rest,
-    }));
+    return true;
+  };
 
-    // Get quizDetails
-    const quizDetails = {
-      userId: userDetails?.user?._id,
-      title: quizData?.quizName,
-      quizType: quizData?.quizType,
-      quizTimer: timer,
-      quizQuestions,
-    };
+  const handleContinue = async () => {
+    if (validateDataBeforeSave()) {
+      // Extracting question details without 'circleCount'
+      const quizQuestions = questions.map(({ circleCount, ...rest }) => ({
+        ...rest,
+      }));
 
-    try {
-      console.log(quizDetails);
-      const response = await createQuiz(quizDetails);
-      console.log(response);
+      // Get quizDetails
+      const quizDetails = {
+        userId: userDetails?.user?._id,
+        title: quizData?.quizName,
+        quizType: quizData?.quizType,
+        quizTimer: timer,
+        quizQuestions,
+      };
 
-      // Only when successful
-      if (response && response.success) {
-        toast.success("Quiz created successfully!");
-        onNext();
+      try {
+        const response = await createQuiz(quizDetails);
+
+        // Only when successful
+        if (response && response.success) {
+          toast.success("Quiz created successfully!");
+
+          // stored the unique share link for the quiz
+          const _shareLink = `${window.location.hostname}/play-quiz/${response.data.quizLink}`;
+          dispatch(setShareLink(_shareLink));
+          onNext();
+        }
+      } catch (error) {
+        toast.error(error.message);
       }
-    } catch (error) {
-      toast.error(error.message);
     }
   };
 
@@ -226,7 +280,7 @@ function QuestionCreator({ onNext }) {
 
         {currentQuestion.questionType === "image" && renderImageOption}
 
-        {currentQuestion.questionType === "textImage" && (
+        {currentQuestion.questionType === "both" && (
           <>
             {renderTextOption}
             {renderImageOption}
@@ -299,7 +353,7 @@ function QuestionCreator({ onNext }) {
 
               <fieldset className={styles.optionType}>
                 <label className={styles.optionTypeLegend}>Question Type</label>
-                {["text", "image", "textImage"].map((type, i) => (
+                {["text", "image", "both"].map((type, i) => (
                   <div className={styles.optionTypeItem} key={i}>
                     <input
                       type="radio"
@@ -331,18 +385,20 @@ function QuestionCreator({ onNext }) {
                   )}
                 </div>
 
-                <div className={styles.timerContainer}>
-                  <label style={{ fontWeight: "bold" }}>Timer</label>
-                  {[0, 5, 10].map((timerOption) => (
-                    <span
-                      key={timerOption}
-                      className={timer === timerOption ? styles.selected : ""}
-                      onClick={() => handleTimerSelect(timerOption, index)}
-                    >
-                      {timerOption === 0 ? "OFF" : `${timerOption} Sec`}
-                    </span>
-                  ))}
-                </div>
+                {quizType && (
+                  <div className={styles.timerContainer}>
+                    <label style={{ fontWeight: "bold" }}>Timer</label>
+                    {[0, 5, 10].map((timerOption) => (
+                      <span
+                        key={timerOption}
+                        className={timer === timerOption ? styles.selected : ""}
+                        onClick={() => handleTimerSelect(timerOption, index)}
+                      >
+                        {timerOption === 0 ? "OFF" : `${timerOption} Sec`}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           ))}

@@ -21,6 +21,7 @@ const CreateQuiz = lazy(() => import("./pages/CreateQuizPage.jsx"));
 const QuestionWiseAnalysis = lazy(() =>
   import("./pages/QuestionWiseAnalysisPage.jsx")
 );
+const PlayQuiz = lazy(() => import("./pages/PlayQuiz.jsx"));
 const ErrorBoundary = lazy(() => import("./pages/ErrorBoundaryPage.jsx"));
 
 const route = createBrowserRouter([
@@ -30,7 +31,8 @@ const route = createBrowserRouter([
     // errorElement: <ErrorBoundary />,
     children: [
       // Unprotected route
-      { index: true, element: <Navigate to="signup" replace /> },
+      // { index: true, element: <Navigate to="signup" replace /> },
+      { index: true, element: <Signup /> },
       { path: "signup", element: <Signup /> },
       { path: "login", element: <Login /> },
 
@@ -38,7 +40,7 @@ const route = createBrowserRouter([
       {
         path: "app/",
         children: [
-          { index: true, element: <Navigate to="/app/dashboard" replace /> },
+          // { index: true, element: <Navigate to="/app/dashboard" replace /> },
           { path: "dashboard", element: <Dashboard /> },
           { path: "create-quiz", element: <CreateQuiz /> },
           { path: "analytics", element: <Analytics /> },
@@ -48,10 +50,12 @@ const route = createBrowserRouter([
           },
         ],
       },
-
-      // Shared link
-      // { path: "play-quiz/:link", element: <SharedQuiz /> },
     ],
+  },
+  {
+    // Shared link
+    path: "/play-quiz/:link",
+    element: <PlayQuiz />,
   },
 ]);
 

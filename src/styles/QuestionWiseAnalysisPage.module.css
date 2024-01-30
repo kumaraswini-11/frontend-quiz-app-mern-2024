@@ -1,0 +1,69 @@
+.container {
+  margin-top: 20px;
+  padding: 50px;
+  padding-left: 80px;
+  width: 80%;
+}
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+  width: 90%;
+}
+.headerContainer h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #5076ff;
+}
+.headerContainer p {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  color: rgb(232, 89, 36);
+}
+.bodyContainer {
+  color: black;
+  /* display: flex;
+  flex-direction: column; */
+}
+.bodySubContainer p {
+  font-weight: 550;
+  font-size: 1.5rem;
+  color: black;
+  margin-bottom: 30px;
+}
+.optionsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+}
+.subOptionsContainer {
+  display: flex;
+  gap: 20px;
+  color: #474444;
+  /* width: 90%; */
+}
+.option {
+  max-width: 250px;
+  background: white;
+  padding: 25px;
+  color: #474444;
+  font-weight: 500;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.hrContainer {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.hrLine {
+  text-align: left;
+  color: #ccc;
+  margin: 35px 0;
+}
