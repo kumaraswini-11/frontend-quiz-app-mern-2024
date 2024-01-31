@@ -37,7 +37,7 @@ function PlayQuiz({ quizAndQuestions, setShowResult, setTestResult }) {
 
   // move to the next question
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = async () => {
     // Validate to choose an option
     if (timer > 0 && selectedOptionIndex === null) {
       toast("Choose an option first");
@@ -51,14 +51,19 @@ function PlayQuiz({ quizAndQuestions, setShowResult, setTestResult }) {
     if (selectedOption && selectedOption.isCorrect !== undefined) {
       // if the selected option is correct, then update the 'correctResponses' & 'result' count by 1
       if (selectedOption && selectedOption?.isCorrect) {
-        selectedOption.correctResponses += 1;
+        currentQuestion.correctResponses += 1;
         setResult((prevResult) => prevResult + 1);
       } else {
-        selectedOption.incorrectResponses += 1;
+        currentQuestion.incorrectResponses += 1;
       }
 
       // Go to the next question if it's not the last one
       if (currentQuestionIndex < quizQuestions?.length - 1) {
+        // Replace the currentQuestion with its respective index in quizQuestions
+        quizQuestions[currentQuestionIndex] = {
+          ...currentQuestion,
+        };
+
         setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
         setSelectedOptionIndex(null);
       } else {
@@ -68,7 +73,7 @@ function PlayQuiz({ quizAndQuestions, setShowResult, setTestResult }) {
           correctResponses: question.correctResponses,
           incorrectResponses: question.incorrectResponses,
         }));
-        updateQuestionsResponse(updateQueResponse);
+        await updateQuestionsResponse(updateQueResponse);
 
         // Go to the Result componnet
         setShowResult(true);

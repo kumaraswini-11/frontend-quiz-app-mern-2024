@@ -8,7 +8,7 @@ import { selectTokens, setTokens } from "../redux/slices/authenticationSlice";
 
 // Create an instance of Axios with custom configuration
 const axiosInstance = axios.create({
-  baseURL: String(import.meta.env.VITE_BACKEND_URL),
+  baseURL: `${String(import.meta.env.VITE_BACKEND_URL)}/api/v1`,
   // Include credentials (cookies) in cross-origin requests. This is used when making a request using the older XMLHttpRequest object.
   withCredentials: true,
   // timeout: 5000,

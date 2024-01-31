@@ -49,7 +49,7 @@ function Analytics() {
   }, [userDetails?.user]);
 
   const handleEdit = (id) => {
-    console.log(`Editing item with id: ${id}`);
+    // console.log(`Editing item with id: ${id}`);
     toast("Editing feature will be implemented soon.");
   };
 
