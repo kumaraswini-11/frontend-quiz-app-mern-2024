@@ -77,6 +77,10 @@
   cursor: pointer;
   transition: background 0.3s ease;
 
+  &:disabled {
+    cursor: not-allowed;
+  }
+
   &:hover {
     background: #4e9d3a;
   }

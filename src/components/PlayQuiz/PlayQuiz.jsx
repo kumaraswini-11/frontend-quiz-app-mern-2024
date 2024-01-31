@@ -1,113 +1,32 @@
 import React, { useState, useEffect } from "react";
 import styles from "./PlayQuiz.module.css";
 import { ButtonComponent } from "../";
+import { toast } from "react-toastify";
 
-// if quizType is "poll", then by default quizTimer is 0. So need of quizType.
-// This is just the dummy data for referance how my server response structer will be.
-const questionsForThisQuiz = {
-  quizTimer: 0,
-  quizQuestions: [
-    {
-      questionText: "This is demo1?",
-      questionOptions: [
-        {
-          optionText: "Option A",
-          optionImageUrl:
-            "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w600/2023/10/free-images.jpg",
-          isCorrect: false,
-        },
-        {
-          optionText: "Option B",
-          optionImageUrl:
-            "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w600/2023/10/free-images.jpg",
-          isCorrect: false,
-        },
-        {
-          optionText: "Option C",
-          optionImageUrl:
-            "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w600/2023/10/free-images.jpg",
-          isCorrect: true,
-        },
-        {
-          optionText: "Option D",
-          optionImageUrl:
-            "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w600/2023/10/free-images.jpg",
-          isCorrect: false,
-        },
-      ],
-    },
-    {
-      questionText: "Is just for demo2?",
-      questionOptions: [
-        {
-          optionText: "Option 1",
-          optionImageUrl:
-            "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w600/2023/10/free-images.jpg",
-          isCorrect: false,
-        },
-        {
-          optionText: "Option 2",
-          optionImageUrl:
-            "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w600/2023/10/free-images.jpg",
-          isCorrect: true,
-        },
-        { optionText: "Option 3", optionImageUrl: "", isCorrect: false },
-        // { optionText: "Option 4", optionImageUrl: "", isCorrect: false },
-      ],
-    },
-    {
-      questionText: "This is demo1?",
-      questionOptions: [
-        {
-          optionText: "Option A",
-          optionImageUrl:
-            "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w600/2023/10/free-images.jpg",
-          isCorrect: false,
-        },
-        {
-          optionText: "Option B",
-          optionImageUrl:
-            "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w600/2023/10/free-images.jpg",
-          isCorrect: false,
-        },
-        {
-          optionText: "Option C",
-          optionImageUrl:
-            "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w600/2023/10/free-images.jpg",
-          isCorrect: true,
-        },
-        {
-          optionText: "Option D",
-          optionImageUrl:
-            "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w600/2023/10/free-images.jpg",
-          isCorrect: false,
-        },
-      ],
-    },
-  ],
-};
+function PlayQuiz({ quizAndQuestions, setShowResult, setTestResult }) {
+  // Destructuring props
+  const { quizTimer = 0, quizQuestions = [] } = quizAndQuestions || {};
 
-function PlayQuiz({ questions }) {
-  //delete
-  questions = questionsForThisQuiz;
-
+  // State variables
+  const [timer, setTimer] = useState(quizTimer);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [result, setResult] = useState(0);
-  const [timer, setTimer] = useState(questions.quizTimer);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const isCorrect = false;
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
 
-  useEffect(() => {
-    let timerInterval;
+  // Get the current question
+  const currentQuestion = quizQuestions[currentQuestionIndex];
 
-    if (timer > 0) {
-      timerInterval = setInterval(() => {
-        setTimer((prevTimer) => prevTimer - 1);
-      }, 1000);
-    }
+  // useEffect(() => {
+  //   let timerInterval;
 
-    return () => clearInterval(timerInterval);
-  }, [timer]);
+  //   if (timer > 0) {
+  //     timerInterval = setInterval(() => {
+  //       setTimer((prevTimer) => prevTimer - 1);
+  //     }, 1000);
+  //   }
+
+  //   return () => clearInterval(timerInterval);
+  // }, [timer]);
 
   // useEffect(() => {
   //   if (timer === 0) {
@@ -115,96 +34,94 @@ function PlayQuiz({ questions }) {
   //   }
   // }, [timer]);
 
+  // move to the next question
+
   const handleNextQuestion = () => {
-    verifyIsCorrectOption(selectedOption);
+    // Validate to choose an option
+    if (timer > 0 && selectedOptionIndex === null) {
+      toast("Choose an option first");
+      return;
+    }
 
-    if (currentQuestionIndex < questionsForThisQuiz.quizQuestions.length - 1) {
-      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-      setTimer(questionsForThisQuiz.quizTimer);
-      setSelectedOption(null);
-    } else {
-      // Go to ResultPage when all questions are answered or submit button clicked
-      // if (
-      //   currentQuestionIndex ===
-      //   questionsForThisQuiz.quizQuestions.length - 1
-      // ) {
-      return (
-        <ResultPage
-          result={result}
-          totalQuestions={questionsForThisQuiz.quizQuestions.length}
-        />
-      );
-      // }
+    // Retrieve the selected option
+    const selectedOption =
+      currentQuestion?.questionOptions[selectedOptionIndex];
+
+    if (selectedOption && selectedOption.isCorrect !== undefined) {
+      // if the selected option is correct, then update the 'correctResponses' & 'result' count by 1
+      if (selectedOption && selectedOption?.isCorrect) {
+        selectedOption.correctResponses += 1;
+        setResult((prevResult) => prevResult + 1);
+      } else {
+        selectedOption.incorrectResponses += 1;
+      }
+
+      // Go to the next question if it's not the last one
+      if (currentQuestionIndex < quizQuestions?.length - 1) {
+        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+        setSelectedOptionIndex(null);
+      } else {
+        // Go to the Result componnet
+        setShowResult(true);
+        setTestResult(result);
+      }
     }
   };
-
-  const verifyIsCorrectOption = (choosedOption) => {
-    const isCorrect =
-      questionsForThisQuiz.quizQuestions[currentQuestionIndex].questionOptions[
-        choosedOption
-      ].isCorrect;
-
-    // update the result
-    if (isCorrect) {
-      setResult((prevResult) => prevResult + 1);
-    }
-  };
-
-  console.log("sleected option", selectedOption);
-  console.log("iscorrect", isCorrect);
-  console.log("result", result);
-
-  const { quizTimer, quizQuestions } = questionsForThisQuiz;
-  const currentQuestion = quizQuestions[currentQuestionIndex];
 
   return (
-    <main className={styles.container}>
-      <div className={styles.subContainer}>
-        <div className={styles.infoContainer}>
-          <label>{`${currentQuestionIndex + 1}/${quizQuestions.length}`}</label>
-          {quizTimer !== 0 && (
-            <label style={{ color: "red" }}>{`00:${timer}s`}</label>
-          )}
-        </div>
+    quizQuestions.length > 0 && (
+      <div className={styles.container}>
+        <div className={styles.subContainer}>
+          {/* Information Container */}
+          <div className={styles.infoContainer}>
+            <label>{`${String(currentQuestionIndex + 1).padStart(
+              2,
+              "0"
+            )}/${String(quizQuestions?.length).padStart(2, "0")}`}</label>
+            {timer > 0 && (
+              <label style={{ color: "red" }}>{`00:${timer}s`}</label>
+            )}
+          </div>
 
-        <div className={styles.bodyContainer}>
-          <label>{currentQuestion.questionText}</label>
-          <div className={styles.optionsContainer}>
-            {currentQuestion.questionOptions.map((option, index) => (
-              <div
-                className={`${styles.optionContainer} ${
-                  selectedOption === index ? styles.selectedOption : ""
-                }`}
-                key={index}
-                onClick={() => {
-                  // verifyIsCorrectOption(index);
-                  setSelectedOption(index);
-                }}
-              >
-                {option.optionImageUrl && (
-                  <img
-                    src={option.optionImageUrl}
-                    alt={`Option${currentQuestionIndex} Image Url`}
-                  />
-                )}
-                <label>{option.optionText}</label>
-              </div>
-            ))}
+          {/* Body Container */}
+          <div className={styles.bodyContainer}>
+            <label>{currentQuestion.questionText}</label>
+            {/* Options Container */}
+            <div className={styles.optionsContainer}>
+              {currentQuestion.questionOptions.map((option, index) => (
+                <div
+                  key={index}
+                  className={`${styles.optionContainer} ${
+                    selectedOptionIndex === index ? styles.selectedOption : ""
+                  }`}
+                  onClick={() => setSelectedOptionIndex(index)}
+                >
+                  {option.optionImageUrl && (
+                    <img
+                      src={option.optionImageUrl}
+                      alt={`Option${currentQuestionIndex} Image Url`}
+                    />
+                  )}
+                  <label>{option.optionText}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Button Container */}
+          <div className={styles.btnContainer}>
+            <ButtonComponent
+              className={styles.submitBtn}
+              onClick={handleNextQuestion}
+            >
+              {currentQuestionIndex === quizQuestions?.length - 1
+                ? "Submit"
+                : "Next"}
+            </ButtonComponent>
           </div>
         </div>
-
-        <div className={styles.btnContainer}>
-          <ButtonComponent
-            className={styles.submitBtn}
-            onClick={handleNextQuestion}
-          >
-            {currentQuestionIndex === quizQuestions.length - 1
-              ? "Submit"
-              : "Next"}
-          </ButtonComponent>
-        </div>
       </div>
-    </main>
+    )
   );
 }
 

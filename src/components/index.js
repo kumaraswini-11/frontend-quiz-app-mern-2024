@@ -33,7 +33,7 @@ export {
   QuizCreator,
   QuestionCreator,
   ShareQuiz,
+  Container,
   PlayQuiz,
   ResultPage,
-  Container,
 };

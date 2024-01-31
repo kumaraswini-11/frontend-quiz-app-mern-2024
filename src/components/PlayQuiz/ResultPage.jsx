@@ -1,20 +1,24 @@
 import React from "react";
-import { Container } from "../index";
+import trophy from "../../assets/trophy.svg";
 import styles from "./ResultPage.module.css";
 
-const ResultPage = ({ result, totalQuestions }) => {
+const ResultPage = ({ testResult, total }) => {
   return (
-    <Container backColor="red">
-      <div className={styles.resultContainer}>
-        <div className={styles.subResultContainer}>
-          <h1>Congrats! Quiz is completed</h1>
-          <img src="" alt="Result Trophy" />
-          <h2>
-            Your Score is {result}/{totalQuestions}
-          </h2>
-        </div>
+    <div className={styles.resultContainer}>
+      <div className={styles.subResultContainer}>
+        <h1>Congrats! Quiz is completed</h1>
+        <img src={trophy} alt="Result Trophy" />
+        <h2>
+          Your Score is
+          <span className={styles.result}>
+            {`${String(testResult).padStart(2, "0")}/${String(total).padStart(
+              2,
+              "0"
+            )}`}
+          </span>
+        </h2>
       </div>
-    </Container>
+    </div>
   );
 };
 
