@@ -37,3 +37,8 @@ export const verifyAndGetDetails = async (_link, signal) => {
   const response = await axiosInstance.post(endpoint, { signal });
   return response.data;
 };
+
+export const updateQuestionsResponse = async (dataForUpadate) => {
+  const endpoint = "/quizzes/update-question-response";
+  const response = await axiosInstance.post(endpoint, dataForUpadate);
+};

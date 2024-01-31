@@ -56,7 +56,7 @@ function PlayQuiz() {
       {showResult ? (
         <ResultPage
           testResult={testResult}
-          total={questions?.quizQuestions?.length || 0} // Check for undefined or null
+          total={questions?.quizQuestions?.length || 0}
         />
       ) : (
         <SharedLinkPlayQuiz

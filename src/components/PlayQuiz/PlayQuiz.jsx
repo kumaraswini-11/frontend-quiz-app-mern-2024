@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import styles from "./PlayQuiz.module.css";
 import { ButtonComponent } from "../";
-import { toast } from "react-toastify";
+import { updateQuestionsResponse } from "../../api/quizService";
 
 function PlayQuiz({ quizAndQuestions, setShowResult, setTestResult }) {
   // Destructuring props
@@ -61,6 +62,14 @@ function PlayQuiz({ quizAndQuestions, setShowResult, setTestResult }) {
         setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
         setSelectedOptionIndex(null);
       } else {
+        //Make the api call to update the response
+        const updateQueResponse = quizQuestions?.map((question, index) => ({
+          questionId: question._id,
+          correctResponses: question.correctResponses,
+          incorrectResponses: question.incorrectResponses,
+        }));
+        updateQuestionsResponse(updateQueResponse);
+
         // Go to the Result componnet
         setShowResult(true);
         setTestResult(result);
