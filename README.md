@@ -24,7 +24,7 @@ Quizzie is a versatile quiz builder application that allows users to create and 
 
 ## Usage
 
-1. **Clone the repository**: `git clone https://github.com/your-username/quizzie.git`
+1. **Clone the repository**: `git clone https://github.com/kumaraswini-11/frontend-quiz-app-mern-2024.git`
 2. **Install dependencies**: `npm install`
 3. **Start the development server**: `npm start`
 4. **Access the application**: Open your browser and navigate to `http://localhost:3000`
