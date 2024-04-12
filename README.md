@@ -1,50 +1,42 @@
-# Task Management System
+# Quizzie - Quiz Builder App
 
-![Task Management System Logo](link/to/logo.png)
+<!-- ![Quizzie Logo](actual-link-to-logo.png) -->
 
 ## Overview
 
-The Task Management System is a comprehensive platform for creating, managing, and collaborating on tasks. It enables users to register, log in, and perform various actions like task creation, updates, and deletions. Additionally, users can view analytics and filter tasks based on different timeframes.
+Quizzie is a versatile quiz builder application that allows users to create and share quizzes with their friends. Users can create accounts, log in, create quizzes, share them, and view analytics for their quizzes. The app supports two types of quizzes: poll type quizzes and Q&A type quizzes.
 
-- **Deployed Application**: [Task Management System](https://frontend-pro-manage-mern-2024.vercel.app/)  
-- **Backend Repository**: [Task Management System Backend](https://github.com/kumaraswini-11/backend-pro-manage-mern-2024)
-- **Figma Design**: [Task Management System Design](https://www.figma.com/file/e3Hc8fJeeHPLGD4i2VhPLk/Pro-Manage?type=design&node-id=1%3A606&mode=design&t=0t62GPgXxHxI2SAm-1)
-  <!-- https://ideabook.club/share/7c3d6d29-5469-450c-add3-100232550653/ -->
+- **Figma Design**: [Quizzie Design](https://www.figma.com/file/RTn8FOXfJiRM5ujgn6LYOA/Quiz-Test?type=design&node-id=0%3A1&mode=design&t=sLxVmFNRUjUJ2X3x-1)
+- **Deployed Application**: [Quizzie App](https://frontend-quiz-app-mern-2024.vercel.app/)
+  <!-- https://ideabook.club/share/fa8729bb-f4bf-4fad-b759-97c1c4bbf772/ -->
 
 ## Features
 
-1. **User Authentication**: Secure registration and login system. Only authenticated users can create tasks.
-2. **Task Creation**: Users can create tasks with customizable properties like priority, due dates (optional), and task lists. Tasks can be shared with others for read-only access.
-3. **Settings**: Personalize your account by updating your name or password securely from the settings page.
-4. **Analytics**: Get insights into task performance and user activity with comprehensive analytics.
-5. **Task Management**: Easily manage tasks by moving them between different states such as backlog, to-do, in-progress, and done.
-6. **Deadline Notifications**: Stay on track with deadline reminders. Overdue tasks are visually highlighted for attention.
-7. **Task Status Indicators**: Instantly identify task status changes with color-coded indicators.
-8. **Task Deletion**: Remove unwanted tasks effortlessly.
-9. **Task Editing**: Modify task details as needed.
-10. **Task Filtering**: Filter tasks by timeframe - choose from today, this week, or this month. Default filter is set to this week.
-11. **Toast Messages**: Receive informative toast messages for important actions and updates.
-12. **Mandatory Fields**: Ensure data integrity by marking mandatory fields with clear indicators.
-13. **Title Clipping**: Long task titles are intelligently clipped with tooltip support for full visibility.
-14. **Mandatory Field Marking**: Clearly identify mandatory fields with visible markers for ease of use.
-15. **Filter Timeframes**: Define timeframes accurately for "this week" and "this month" filters.
+- **User Authentication**: Secure registration and login system with JWT implementation. Only authenticated users can create quizzes.
+- **User Dashboard**: Multiple users can create accounts and access their respective created quizzes in their dashboard.
+- **Quiz Creation**: Users can create quizzes, including both poll type quizzes and Q&A type quizzes.
+- **Quiz Sharing**: Users can share their quizzes using a share button. Recipients of the shared link can take the quiz without logging in.
+- **Results and Analytics**: Show users their scores at the end of Q&A quizzes and provide analytics for different quizzes, including impression count.
+- **Timer and Question Structure**: Add timers to questions and set the question structure with options and answers.
+- **Limitations and Settings**: Limit quizzes to a maximum of 5 questions per quiz and allow users to personalize account settings.
+- **Styling and Organization**: Utilize raw/vanilla CSS for styling and modular CSS for better organization.
+- **Functionality**: Implement basic form validations, JWT authentication mechanism, toast library for notifications, password security, and proper error handling on both backend and frontend.
 
 ## Usage
 
-1. **Clone the repository**: `git clone https://github.com/kumaraswini-11/frontend-quiz-app-mern-2024.git`
+1. **Clone the repository**: `git clone https://github.com/your-username/quizzie.git`
 2. **Install dependencies**: `npm install`
-3. **Start the development server**: `npm run dev`
+3. **Start the development server**: `npm start`
 4. **Access the application**: Open your browser and navigate to `http://localhost:3000`
-
-**Sample Login Credentials**:
-- Email: sitaram@gmail.com
-- Password: 123456789
 
 ## Contributing
 
-Contributions are welcomed! If you have suggestions, bug reports, or feature requests, feel free to open an issue or submit a pull request.
+Contributions are welcome! If you have suggestions, bug reports, or feature requests, feel free to open an issue or submit a pull request. <!-- Please follow our [Contribution Guidelines](link-to-contribution-guidelines). -->
 
+<!-- 
 ## License
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+-->
 
+Made with ❤️
